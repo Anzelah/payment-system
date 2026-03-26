@@ -51,3 +51,4 @@ docker-compose.override.yml
 # Optional: ignore backup / temp files
 *.bak
 *.tmp
+/generated/prisma
