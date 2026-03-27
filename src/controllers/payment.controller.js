@@ -49,4 +49,4 @@ async function createPayment (req, res) {
 }
 
 
-module.exports = new PaymentController();
+module.exports = { createPayment }
