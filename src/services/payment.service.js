@@ -1,5 +1,5 @@
 class PaymentService {
-    constructor(providers) { // when we create an instance of this class, we pass a map of providers(stored in var providers)
+    constructor(providers) { // when we create an instance of this class, we pass a map of providers(created in app.js)
         this.providers = providers; // this class remembers this providers internally(this.providers)
     }
 

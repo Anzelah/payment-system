@@ -6,3 +6,5 @@ const paymentService = new PaymentService({
   stripe: new StripeProvider(),
   mpesa: new MpesaProvider(),
 });
+
+module.exports = paymentService;
