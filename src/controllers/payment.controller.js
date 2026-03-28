@@ -1,13 +1,12 @@
 const prisma = require('../utils/prisma')
 const paymentService = require("../app")
-const { v4: uuidv4 } = require("uuid")
 
 async function createPayment (req, res) {
     try {
         // validate inputs
         const { userId, amount, currency, provider, idempotencyKey } = req.body
 
-        if (!userId || !amount || !currency || !provider ||!idempotencyKey ) { //to replace with zod validation
+        if (!userId || !amount || !currency || !provider ||!idempotencyKey ) { //to replace with zod validation middleware
             return res.status(400).json({ error: "Missing required fields" })
         }
 
@@ -42,7 +41,7 @@ async function createPayment (req, res) {
             transaction, 
             providerResponse: response
         })
-    } catch(error) {
+    } catch(error) { // to replace with error handler middleware
         console.error(error)
         res.status(500).json({ error: "Something went wrong"})
     }
