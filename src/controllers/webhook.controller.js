@@ -1,7 +1,7 @@
 const prisma = require("../utils/prisma")
 
 class WebhookController {
-    async stripeWebhook(req,res) {
+    async stripeWebhook(req, res) {
         try {
             const payload = req.body
 
@@ -22,4 +22,28 @@ class WebhookController {
         }
     }
 
+    async mpesaCallback( req, res) {
+        try {
+            const payload = req.body
+
+            // store the event first(we don't want to lose any transactions)
+            await prisma.paymentEvent.create({
+                data: {
+                    type: "mpesa_callback",
+                    payload,
+                    processed: false
+
+                }
+            })
+            console.log("Mpesa callback stored")
+            return res.json({ received: true })
+        } catch(error) {
+            console.error("Mpesa callback error:", error);
+            return res.status(500).json({ error: "callback error" });
+        }
+
+    }
+
 }
+
+module.exports = new WebhookController();
