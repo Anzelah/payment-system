@@ -48,4 +48,4 @@ async function createPayment (req, res) {
 }
 
 
-module.exports = { createPayment }
+module.exports = createPayment 
