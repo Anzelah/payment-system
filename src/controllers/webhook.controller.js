@@ -1,4 +1,5 @@
 const prisma = require("../utils/prisma")
+const paymentQueue = require("../queues/payment.queue")
 
 class WebhookController {
     async stripeWebhook(req, res) {
@@ -6,7 +7,7 @@ class WebhookController {
             const payload = req.body
 
             // store the event first(we don't want to lose any transactions)
-            await prisma.paymentEvent.create({
+            const event = await prisma.paymentEvent.create({
                 data: {
                     type: payload.type || "unknown",
                     payload,
@@ -15,6 +16,10 @@ class WebhookController {
                 }
             })
             console.log("Stripe webhook stored")
+
+            // add to queue
+            await paymentQueue.add('stripe-event', { eventId: event.id } )
+
             return res.json({ received: true })
         } catch(error) {
             console.error("Stripe webhook error:", error);
@@ -27,7 +32,7 @@ class WebhookController {
             const payload = req.body
 
             // store the event first(we don't want to lose any transactions)
-            await prisma.paymentEvent.create({
+            const event = await prisma.paymentEvent.create({
                 data: {
                     type: "mpesa_callback",
                     payload,
@@ -36,6 +41,10 @@ class WebhookController {
                 }
             })
             console.log("Mpesa callback stored")
+
+            // push to queue
+            await paymentQueue.add('mpesa-event', { eventId: event.id } )
+
             return res.json({ received: true })
         } catch(error) {
             console.error("Mpesa callback error:", error);
