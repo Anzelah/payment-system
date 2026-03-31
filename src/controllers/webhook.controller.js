@@ -19,6 +19,7 @@ class WebhookController {
 
             // add to queue
             await paymentQueue.add('stripe-event', { eventId: event.id } )
+            console.log("Stripe payment queued")
 
             return res.json({ received: true })
         } catch(error) {
@@ -44,6 +45,7 @@ class WebhookController {
 
             // push to queue
             await paymentQueue.add('mpesa-event', { eventId: event.id } )
+            console.log("Mpesa payment queued")
 
             return res.json({ received: true })
         } catch(error) {
