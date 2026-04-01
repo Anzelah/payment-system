@@ -18,7 +18,15 @@ class WebhookController {
             console.log("Stripe webhook stored")
 
             // add to queue
-            await paymentQueue.add('stripe-event', { eventId: event.id } )
+            await paymentQueue.add( 'stripe-event', { eventId: event.id }, 
+                {
+                    attempts: 3,
+                    backoff: {
+                        type: 'exponential',
+                        delay: 1000,
+                    },
+                },
+            );
             console.log("Stripe payment queued")
 
             return res.json({ received: true })
@@ -44,7 +52,15 @@ class WebhookController {
             console.log("Mpesa callback stored")
 
             // push to queue
-            await paymentQueue.add('mpesa-event', { eventId: event.id } )
+            await paymentQueue.add('mpesa-event', { eventId: event.id },
+                {
+                    attempts: 3,
+                    backoff: {
+                        type: 'exponential',
+                        delay: 1000,
+                    },
+                },
+            );
             console.log("Mpesa payment queued")
 
             return res.json({ received: true })
