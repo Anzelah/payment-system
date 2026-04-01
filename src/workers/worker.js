@@ -3,9 +3,8 @@ const paymentQueue = require("../queues/payment.queue")
 const connection = require("../utils/redis")
 const prisma = require("../utils/prisma")
 
-// processing function
+// Worker processing the job
 async function processPaymentJob(job) {
-    // process job here
     const { eventId } = job.data
 
     // retrieve the event/job from database for processing
@@ -14,6 +13,10 @@ async function processPaymentJob(job) {
     })
     if (!event) {
         throw new Error("Event not found")
+    }
+    if(event.processed) { // have i already seen this order?
+        console.log("Event already processed")
+        return;
     }
     console.log("Payment event retrieved")
 
@@ -26,12 +29,16 @@ async function processPaymentJob(job) {
     }
 
     // retrieve the transcaction we need to update then update status
-    const transaction = await prisma.transaction.findFirst({
+    const transaction = await prisma.transaction.findMany({
         where: { reference }
     })
     if(!transaction) {
         console.log("No transaction for this reference")
         return
+    }
+    if (transaction.status === 'SUCCESS') { // have i already marked this order as paid
+        console.log("Transaction already updated")
+        return;
     }
     console.log("Transaction for the reference retrieved from database")
 
