@@ -29,7 +29,7 @@ async function processPaymentJob(job) {
     }
 
     // retrieve the transcaction we need to update then update status
-    const transaction = await prisma.transaction.findMany({
+    const transaction = await prisma.transaction.findFirst({
         where: { reference }
     })
     if(!transaction) {
@@ -42,11 +42,19 @@ async function processPaymentJob(job) {
     }
     console.log("Transaction for the reference retrieved from database")
 
-    await prisma.transaction.update({
-        where: { id: transaction.id },
+    // Solve race conditions
+    const result = await prisma.transaction.updateMany({
+        where: {
+            id: transaction.id,
+            status: 'PENDING',
+        },
         data: { status: "SUCCESS" },
     })
     console.log("Transaction status updated in database")
+    if(result.count === 0) {
+        console.log("Transaction already updated by another worker")
+        return;
+    }
 
     // Mark event as done
     await prisma.paymentEvent.update({
