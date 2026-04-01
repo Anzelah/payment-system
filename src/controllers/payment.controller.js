@@ -1,5 +1,6 @@
 const prisma = require('../utils/prisma')
 const paymentService = require("../app")
+const { randomUUID } = require("crypto")
 
 async function createPayment (req, res) {
     try {
@@ -23,7 +24,7 @@ async function createPayment (req, res) {
             data: {
                 userId,
                 provider: provider.toUpperCase(),
-                reference: `ref_${Date.now()}`,
+                reference: `ref_${randomUUID()}`,
                 amount,
                 currency,
                 status: "PENDING",
