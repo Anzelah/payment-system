@@ -11,12 +11,28 @@ async function createPayment (req, res) {
             return res.status(400).json({ error: "Missing required fields" })
         }
 
-        //check for double transaction 
+        // A user clicks twice unintentionally 
         const existingTransaction = await prisma.transaction.findUnique({
             where: { idempotencyKey }
         })
         if (existingTransaction) {
             return res.status(200).json(existingTransaction)
+        }
+        
+        // A user grew impatient and tried to repeat the same transaction
+        const recentTransaction = await prisma.transaction.findFirst({
+            where: {
+                userId,
+                amount,
+                currency,
+                status: "PENDING",
+                createdAt: { 
+                    gte: new Date(Date.now() - 5 * 60 * 1000) // last 5 minutes
+                },
+            },
+        })
+        if (recentTransaction) {
+            return res.status(400).json({ error: "A similar transaction is underway"})
         }
 
         // create the transaction in the db
