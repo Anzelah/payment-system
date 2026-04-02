@@ -4,7 +4,7 @@ const paymentQueue = require("../queues/payment.queue")
 class WebhookController {
     async stripeWebhook(req, res) {
         try {
-            const payload = req.body
+            const payload = req.stripeEvent // already verified
             const stripeEventId = payload.id
 
             if (!stripeEventId) {
