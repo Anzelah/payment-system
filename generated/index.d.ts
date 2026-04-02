@@ -3385,6 +3385,7 @@ export namespace Prisma {
 
   export type PaymentEventMinAggregateOutputType = {
     id: string | null
+    eventId: string | null
     transactionId: string | null
     type: string | null
     processed: boolean | null
@@ -3393,6 +3394,7 @@ export namespace Prisma {
 
   export type PaymentEventMaxAggregateOutputType = {
     id: string | null
+    eventId: string | null
     transactionId: string | null
     type: string | null
     processed: boolean | null
@@ -3401,6 +3403,7 @@ export namespace Prisma {
 
   export type PaymentEventCountAggregateOutputType = {
     id: number
+    eventId: number
     transactionId: number
     type: number
     payload: number
@@ -3412,6 +3415,7 @@ export namespace Prisma {
 
   export type PaymentEventMinAggregateInputType = {
     id?: true
+    eventId?: true
     transactionId?: true
     type?: true
     processed?: true
@@ -3420,6 +3424,7 @@ export namespace Prisma {
 
   export type PaymentEventMaxAggregateInputType = {
     id?: true
+    eventId?: true
     transactionId?: true
     type?: true
     processed?: true
@@ -3428,6 +3433,7 @@ export namespace Prisma {
 
   export type PaymentEventCountAggregateInputType = {
     id?: true
+    eventId?: true
     transactionId?: true
     type?: true
     payload?: true
@@ -3510,6 +3516,7 @@ export namespace Prisma {
 
   export type PaymentEventGroupByOutputType = {
     id: string
+    eventId: string
     transactionId: string | null
     type: string
     payload: JsonValue
@@ -3536,6 +3543,7 @@ export namespace Prisma {
 
   export type PaymentEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    eventId?: boolean
     transactionId?: boolean
     type?: boolean
     payload?: boolean
@@ -3546,6 +3554,7 @@ export namespace Prisma {
 
   export type PaymentEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    eventId?: boolean
     transactionId?: boolean
     type?: boolean
     payload?: boolean
@@ -3556,6 +3565,7 @@ export namespace Prisma {
 
   export type PaymentEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    eventId?: boolean
     transactionId?: boolean
     type?: boolean
     payload?: boolean
@@ -3566,6 +3576,7 @@ export namespace Prisma {
 
   export type PaymentEventSelectScalar = {
     id?: boolean
+    eventId?: boolean
     transactionId?: boolean
     type?: boolean
     payload?: boolean
@@ -3573,7 +3584,7 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type PaymentEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "transactionId" | "type" | "payload" | "processed" | "createdAt", ExtArgs["result"]["paymentEvent"]>
+  export type PaymentEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "eventId" | "transactionId" | "type" | "payload" | "processed" | "createdAt", ExtArgs["result"]["paymentEvent"]>
   export type PaymentEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     transaction?: boolean | PaymentEvent$transactionArgs<ExtArgs>
   }
@@ -3591,6 +3602,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      eventId: string
       transactionId: string | null
       type: string
       payload: Prisma.JsonValue
@@ -4021,6 +4033,7 @@ export namespace Prisma {
    */
   interface PaymentEventFieldRefs {
     readonly id: FieldRef<"PaymentEvent", 'String'>
+    readonly eventId: FieldRef<"PaymentEvent", 'String'>
     readonly transactionId: FieldRef<"PaymentEvent", 'String'>
     readonly type: FieldRef<"PaymentEvent", 'String'>
     readonly payload: FieldRef<"PaymentEvent", 'Json'>
@@ -4500,6 +4513,7 @@ export namespace Prisma {
 
   export const PaymentEventScalarFieldEnum: {
     id: 'id',
+    eventId: 'eventId',
     transactionId: 'transactionId',
     type: 'type',
     payload: 'payload',
@@ -4798,6 +4812,7 @@ export namespace Prisma {
     OR?: PaymentEventWhereInput[]
     NOT?: PaymentEventWhereInput | PaymentEventWhereInput[]
     id?: StringFilter<"PaymentEvent"> | string
+    eventId?: StringFilter<"PaymentEvent"> | string
     transactionId?: StringNullableFilter<"PaymentEvent"> | string | null
     type?: StringFilter<"PaymentEvent"> | string
     payload?: JsonFilter<"PaymentEvent">
@@ -4808,6 +4823,7 @@ export namespace Prisma {
 
   export type PaymentEventOrderByWithRelationInput = {
     id?: SortOrder
+    eventId?: SortOrder
     transactionId?: SortOrderInput | SortOrder
     type?: SortOrder
     payload?: SortOrder
@@ -4818,6 +4834,7 @@ export namespace Prisma {
 
   export type PaymentEventWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    eventId?: string
     AND?: PaymentEventWhereInput | PaymentEventWhereInput[]
     OR?: PaymentEventWhereInput[]
     NOT?: PaymentEventWhereInput | PaymentEventWhereInput[]
@@ -4827,10 +4844,11 @@ export namespace Prisma {
     processed?: BoolFilter<"PaymentEvent"> | boolean
     createdAt?: DateTimeFilter<"PaymentEvent"> | Date | string
     transaction?: XOR<TransactionNullableScalarRelationFilter, TransactionWhereInput> | null
-  }, "id">
+  }, "id" | "eventId">
 
   export type PaymentEventOrderByWithAggregationInput = {
     id?: SortOrder
+    eventId?: SortOrder
     transactionId?: SortOrderInput | SortOrder
     type?: SortOrder
     payload?: SortOrder
@@ -4846,6 +4864,7 @@ export namespace Prisma {
     OR?: PaymentEventScalarWhereWithAggregatesInput[]
     NOT?: PaymentEventScalarWhereWithAggregatesInput | PaymentEventScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"PaymentEvent"> | string
+    eventId?: StringWithAggregatesFilter<"PaymentEvent"> | string
     transactionId?: StringNullableWithAggregatesFilter<"PaymentEvent"> | string | null
     type?: StringWithAggregatesFilter<"PaymentEvent"> | string
     payload?: JsonWithAggregatesFilter<"PaymentEvent">
@@ -4995,6 +5014,7 @@ export namespace Prisma {
 
   export type PaymentEventCreateInput = {
     id?: string
+    eventId: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
     processed?: boolean
@@ -5004,6 +5024,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedCreateInput = {
     id?: string
+    eventId: string
     transactionId?: string | null
     type: string
     payload: JsonNullValueInput | InputJsonValue
@@ -5013,6 +5034,7 @@ export namespace Prisma {
 
   export type PaymentEventUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     processed?: BoolFieldUpdateOperationsInput | boolean
@@ -5022,6 +5044,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
@@ -5031,6 +5054,7 @@ export namespace Prisma {
 
   export type PaymentEventCreateManyInput = {
     id?: string
+    eventId: string
     transactionId?: string | null
     type: string
     payload: JsonNullValueInput | InputJsonValue
@@ -5040,6 +5064,7 @@ export namespace Prisma {
 
   export type PaymentEventUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     processed?: BoolFieldUpdateOperationsInput | boolean
@@ -5048,6 +5073,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     transactionId?: NullableStringFieldUpdateOperationsInput | string | null
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
@@ -5319,6 +5345,7 @@ export namespace Prisma {
 
   export type PaymentEventCountOrderByAggregateInput = {
     id?: SortOrder
+    eventId?: SortOrder
     transactionId?: SortOrder
     type?: SortOrder
     payload?: SortOrder
@@ -5328,6 +5355,7 @@ export namespace Prisma {
 
   export type PaymentEventMaxOrderByAggregateInput = {
     id?: SortOrder
+    eventId?: SortOrder
     transactionId?: SortOrder
     type?: SortOrder
     processed?: SortOrder
@@ -5336,6 +5364,7 @@ export namespace Prisma {
 
   export type PaymentEventMinOrderByAggregateInput = {
     id?: SortOrder
+    eventId?: SortOrder
     transactionId?: SortOrder
     type?: SortOrder
     processed?: SortOrder
@@ -5833,6 +5862,7 @@ export namespace Prisma {
 
   export type PaymentEventCreateWithoutTransactionInput = {
     id?: string
+    eventId: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
     processed?: boolean
@@ -5841,6 +5871,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedCreateWithoutTransactionInput = {
     id?: string
+    eventId: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
     processed?: boolean
@@ -5901,6 +5932,7 @@ export namespace Prisma {
     OR?: PaymentEventScalarWhereInput[]
     NOT?: PaymentEventScalarWhereInput | PaymentEventScalarWhereInput[]
     id?: StringFilter<"PaymentEvent"> | string
+    eventId?: StringFilter<"PaymentEvent"> | string
     transactionId?: StringNullableFilter<"PaymentEvent"> | string | null
     type?: StringFilter<"PaymentEvent"> | string
     payload?: JsonFilter<"PaymentEvent">
@@ -6028,6 +6060,7 @@ export namespace Prisma {
 
   export type PaymentEventCreateManyTransactionInput = {
     id?: string
+    eventId: string
     type: string
     payload: JsonNullValueInput | InputJsonValue
     processed?: boolean
@@ -6036,6 +6069,7 @@ export namespace Prisma {
 
   export type PaymentEventUpdateWithoutTransactionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     processed?: BoolFieldUpdateOperationsInput | boolean
@@ -6044,6 +6078,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedUpdateWithoutTransactionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     processed?: BoolFieldUpdateOperationsInput | boolean
@@ -6052,6 +6087,7 @@ export namespace Prisma {
 
   export type PaymentEventUncheckedUpdateManyWithoutTransactionInput = {
     id?: StringFieldUpdateOperationsInput | string
+    eventId?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     payload?: JsonNullValueInput | InputJsonValue
     processed?: BoolFieldUpdateOperationsInput | boolean

@@ -53,6 +53,7 @@ model Transaction {
 
 model PaymentEvent {
   id            String  @id @default(uuid())
+  eventId       String  @unique
   transactionId String?
   type          String
   payload       Json

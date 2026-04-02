@@ -141,6 +141,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
 
 exports.Prisma.PaymentEventScalarFieldEnum = {
   id: 'id',
+  eventId: 'eventId',
   transactionId: 'transactionId',
   type: 'type',
   payload: 'payload',
