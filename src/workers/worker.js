@@ -20,17 +20,9 @@ async function processPaymentJob(job) {
     }
     console.log("Payment event retrieved")
 
-    // retrieve provider message details and extract transaction reference for subsequent db search
-    const payload = event.payload
-    const reference = payload?.data?.object?.id
-    if (!reference) {
-        console.log("No reference in this payload")
-        return;
-    }
-
-    // retrieve the transcaction we need to update then update status
-    const transaction = await prisma.transaction.findFirst({
-        where: { reference }
+    // retrieve the transaction we need to update then update status
+    const transaction = await prisma.transaction.findUnique({
+        where: { id: event.transactionId }
     })
     if(!transaction) {
         console.log("No transaction for this reference")
