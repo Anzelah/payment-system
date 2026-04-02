@@ -32,7 +32,7 @@ async function createPayment (req, res) {
             },
         })
         if (recentTransaction) {
-            return res.status(400).json({ error: "A similar transaction is underway"})
+            return res.status(200).json({ message: "A similar transaction is underway"})
         }
 
         // create the transaction in the db
