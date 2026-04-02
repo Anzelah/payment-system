@@ -51,7 +51,7 @@ async function createPayment (req, res) {
         // call payment service to process the payment now
         const response = await paymentService.createPayment(
             provider,
-            { amount, currency, reference: transaction.reference } )
+            { amount, currency, reference: transaction.reference, transactionId: transaction.id })
 
         return res.status(201).json({
             message: "Payment inititated succesfully",
