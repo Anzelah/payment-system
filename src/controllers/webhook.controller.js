@@ -5,10 +5,22 @@ class WebhookController {
     async stripeWebhook(req, res) {
         try {
             const payload = req.body
+            const stripeEventId = payload.id
+
+            // check for duplicate webhooks
+            const existingEvent = await prisma.paymentEvent.findUnique({
+                where: { eventId: stripeEventId }
+            })
+            if (existingEvent) {
+                console.log("Duplicate webhook")
+                return res.json({ received: true })
+            }
+            let event;
 
             // store the event first(we don't want to lose any transactions)
-            const event = await prisma.paymentEvent.create({
+            event = await prisma.paymentEvent.create({
                 data: {
+                    eventId: stripeEventId,
                     type: payload.type || "unknown",
                     payload,
                     processed: false
@@ -18,7 +30,7 @@ class WebhookController {
             console.log("Stripe webhook stored")
 
             // add to queue
-            await paymentQueue.add( 'stripe-event', { eventId: event.id }, 
+            await paymentQueue.add( 'stripe-event', { eventId: event.id }, // db id
                 {
                     attempts: 3,
                     backoff: {
@@ -39,10 +51,21 @@ class WebhookController {
     async mpesaCallback( req, res) {
         try {
             const payload = req.body
+            const mpesaEventId = payload.Body.stkCallback.CheckoutRequestID;
+
+            // check for duplicate webhooks
+            const existingEvent = await prisma.paymentEvent.findUnique({
+                where: { eventId: mpesaEventId }
+            })
+            if (existingEvent) {
+                console.log("Duplicate webhook")
+                return res.json({ received: true })
+            }
 
             // store the event first(we don't want to lose any transactions)
             const event = await prisma.paymentEvent.create({
                 data: {
+                    eventId: mpesaEventId
                     type: "mpesa_callback",
                     payload,
                     processed: false
