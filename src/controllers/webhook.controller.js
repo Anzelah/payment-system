@@ -7,18 +7,20 @@ class WebhookController {
             const payload = req.body
             const stripeEventId = payload.id
 
-            // check for duplicate webhooks
+            if (!stripeEventId) {
+                return res.status(400).json({ error: "Invalid payload" })
+            }
+
+            // pre-check for duplication
             const existingEvent = await prisma.paymentEvent.findUnique({
                 where: { eventId: stripeEventId }
             })
-            if (existingEvent) {
-                console.log("Duplicate webhook")
-                return res.json({ received: true })
+            if(existingEvent) {
+                return res.status(200).json({ received: true })
             }
-            let event;
 
             // store the event first(we don't want to lose any transactions)
-            event = await prisma.paymentEvent.create({
+            const event = await prisma.paymentEvent.create({
                 data: {
                     eventId: stripeEventId,
                     type: payload.type || "unknown",
@@ -43,6 +45,10 @@ class WebhookController {
 
             return res.json({ received: true })
         } catch(error) {
+            if (error.code === "P2002") {
+                console.log("Duplicate webhook")
+                return res.status(200).json({ received: true })  
+            }
             console.error("Stripe webhook error:", error);
             return res.status(500).json({ error: "Webhook error" });
         }
@@ -53,19 +59,23 @@ class WebhookController {
             const payload = req.body
             const mpesaEventId = payload.Body.stkCallback.CheckoutRequestID;
 
-            // check for duplicate webhooks
+            if (!mpesaEventId) {
+                return res.status(400).json({ error: "Invalid payload" })
+            }
+
+            // pre-check for duplicate webhooks
             const existingEvent = await prisma.paymentEvent.findUnique({
                 where: { eventId: mpesaEventId }
             })
             if (existingEvent) {
                 console.log("Duplicate webhook")
-                return res.json({ received: true })
+                return res.status(200).json({ received: true })
             }
 
             // store the event first(we don't want to lose any transactions)
             const event = await prisma.paymentEvent.create({
                 data: {
-                    eventId: mpesaEventId
+                    eventId: mpesaEventId,
                     type: "mpesa_callback",
                     payload,
                     processed: false
@@ -88,6 +98,10 @@ class WebhookController {
 
             return res.json({ received: true })
         } catch(error) {
+            if (error.code === "P2002") {
+                console.log("Duplicate webhook")
+                return res.status(200).json({ received: true })  
+            }
             console.error("Mpesa callback error:", error);
             return res.status(500).json({ error: "callback error" });
         }
