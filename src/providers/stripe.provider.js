@@ -5,6 +5,7 @@ class StripeProvider {
         const amount = parseInt(data.amount)
         const currency = data.currency
         const reference = data.reference
+        const transactionId = data.transactionId
  
         const session = await stripe.checkout.sessions.create({ // server to server communication with stripe
             mode: "payment",
@@ -19,7 +20,8 @@ class StripeProvider {
             success_url: 'http://localhost:3000/dashboard?stripe=success',
             cancel_url: 'http://localhost:3000/dashboard?stripe=cancel',
             metadata: {
-                reference
+                reference,
+                transactionId //db lookup
             }
         })
 
