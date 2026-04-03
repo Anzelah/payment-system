@@ -4,7 +4,7 @@ const connection = require("../utils/redis")
 const prisma = require("../utils/prisma")
 
 // Worker processing the job
-async function processPaymentJob(job) {
+async function processStripePayment(job) {
     const { eventId } = job.data
 
     // retrieve the event/job from database for processing
@@ -86,12 +86,21 @@ async function processPaymentJob(job) {
         }
 }
 
+async function processMpesaPayment(job) {
+    // worker to process mpesa payment
+}
+
 const worker = new Worker('payment', async(job) => {
-    try {
-        await processPaymentJob(job)
-    } catch(error) {
-        console.error("Worker error:", error)
-        throw error
+    switch(job.name){
+        case 'stripe':
+            await processStripePayment(job)
+            break;
+        case 'mpesa':
+            await processMpesaPayment(job)
+            break;
+        default:
+            console.error("Worker error:", error)
+            throw new Error("Unknown job name:", job.name)
     }
 },
 { connection });
