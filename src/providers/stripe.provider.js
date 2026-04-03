@@ -27,16 +27,16 @@ class StripeProvider {
                 transactionId //db lookup
             }
         })
-
-        res.json({ url: session.url })
+        return {
+          message: "Payment initiated succesfully", 
+          url: session.url,
+          provider: "stripe",
+          status: "PENDING"
+        }
     } catch(error) {
         next(error)
     }
   }
-  
-    async handleWebhook(payload) {
-      console.log("Stripe webhook received", payload);
-    }
-  }
+}
   
   module.exports = StripeProvider;
