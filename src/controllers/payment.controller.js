@@ -53,11 +53,7 @@ async function createPayment (req, res) {
             provider,
             { amount, currency, reference: transaction.reference, transactionId: transaction.id })
 
-        return res.status(201).json({
-            message: "Payment inititated succesfully",
-            transaction, 
-            providerResponse: response
-        })
+        return res.json({ url: response.url })
     } catch(error) { // to replace with error handler middleware
         console.error(error)
         res.status(500).json({ error: "Something went wrong"})
