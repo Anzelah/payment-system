@@ -92,10 +92,10 @@ async function processMpesaPayment(job) {
 
 const worker = new Worker('payment', async(job) => {
     switch(job.name){
-        case 'stripe':
+        case 'stripe-event':
             await processStripePayment(job)
             break;
-        case 'mpesa':
+        case 'mpesa-event':
             await processMpesaPayment(job)
             break;
         default:
