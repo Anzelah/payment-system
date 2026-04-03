@@ -7,9 +7,6 @@ class WebhookController {
             const event = req.stripeEvent // already verified
             const stripeEventId = event.id // stripe's own event_id sent with every webhook
 
-            const session = event.data.object
-            const transactionId = session.metadata.transactionId
-
             if (!stripeEventId) {
                 return res.status(400).json({ error: "Invalid payload" })
             }
@@ -22,6 +19,8 @@ class WebhookController {
                 return res.status(200).json({ received: true })
             }
 
+            const session = event.data.object
+            const transactionId = session.metadata.transactionId
             // store the event first(we don't want to lose any transactions)
             const paymentEvent = await prisma.paymentEvent.create({
                 data: {

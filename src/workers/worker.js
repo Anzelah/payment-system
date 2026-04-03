@@ -20,7 +20,7 @@ async function processPaymentJob(job) {
     }
     console.log("Payment event retrieved")
 
-    // retrieve reference to use in error messages
+    // retrieve stripe's sent payload/event
     const payload = event.payload
     const session = payload.data.object
     const reference = session.metadata.reference
@@ -39,26 +39,51 @@ async function processPaymentJob(job) {
     }
     console.log("Transaction for the reference retrieved from database")
 
-    // Solve race conditions
-    const result = await prisma.transaction.updateMany({
-        where: {
-            id: transaction.id,
-            status: 'PENDING',
-        },
-        data: { status: "SUCCESS" },
-    })
-    console.log("Transaction status updated in database")
-    if(result.count === 0) {
-        console.log("Transaction already updated by another worker")
-        return;
-    }
+    switch (event.type) {
+        case "checkout.session.completed":
+            const result = await prisma.transaction.updateMany({
+                where: {
+                    id: transaction.id,
+                    status: 'PENDING',
+                },
+                data: { status: "SUCCESS" },
+            })
+            console.log("Transaction status updated as SUCCESS")
+            if(result.count === 0) {
+                console.log("Transaction already updated by another worker")
+                return;
+            }
 
-    // Mark event as done
-    await prisma.paymentEvent.update({
-        where: { id: event.id },
-        data: { processed: true }
-    })
-    console.log("Event marked as processed")
+            // Mark event as done
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+            console.log("Event marked as processed")
+            break;
+        case "payment_intent.payment_failed":
+            await prisma.transaction.updateMany({
+                where: {
+                    id: transaction.id,
+                    status: 'PENDING',
+                },
+                data: { status: "FAILED" },
+            })
+            console.log("Transaction status updated as FAILED")
+
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+            break;
+        default:
+            // Unexpected event type
+            console.log(`Unhandled event type ${event.type}.`);
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+        }
 }
 
 const worker = new Worker('payment', async(job) => {
