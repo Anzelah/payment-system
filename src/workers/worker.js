@@ -61,6 +61,7 @@ async function processStripePayment(job) {
             })
             console.log("Event marked as processed")
             break;
+
         case "payment_intent.payment_failed":
             await prisma.transaction.updateMany({
                 where: {
@@ -76,6 +77,7 @@ async function processStripePayment(job) {
                 data: { processed: true }
             })
             break;
+
         default:
             // Unexpected event type
             console.log(`Unhandled event type ${event.type}.`);
@@ -91,16 +93,21 @@ async function processMpesaPayment(job) {
 }
 
 const worker = new Worker('payment', async(job) => {
-    switch(job.name){
-        case 'stripe-event':
-            await processStripePayment(job)
-            break;
-        case 'mpesa-event':
-            await processMpesaPayment(job)
-            break;
-        default:
-            console.error("Worker error:", error)
-            throw new Error("Unknown job name:", job.name)
+    try {
+        switch(job.name) {
+            case 'stripe-event':
+                await processStripePayment(job)
+                break;
+            case 'mpesa-event':
+                await processMpesaPayment(job)
+                break;
+            default:
+                console.log("Unknown job type:", job.name)
+                return;
+        } 
+    } catch(error) {
+        console.error("Worker error:", error)
+        throw error
     }
 },
 { connection });
