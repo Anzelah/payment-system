@@ -13,7 +13,10 @@ class StripeProvider {
             line_items: [{
                 price_data: {
                     currency,
-                    unit_amount: amount
+                    unit_amount: amount,
+                    product_data: {
+                      name: "payment",
+                    },
                 },
                 quantity: 1,
                 }],
@@ -29,14 +32,7 @@ class StripeProvider {
     } catch(error) {
         next(error)
     }
-      
-  
-      // Later: integrate real Stripe logic
-      return {
-        provider: "stripe",
-        status: "pending",
-      };
-    }
+  }
   
     async handleWebhook(payload) {
       console.log("Stripe webhook received", payload);
