@@ -20,12 +20,17 @@ async function processPaymentJob(job) {
     }
     console.log("Payment event retrieved")
 
+    // retrieve reference to use in error messages
+    const payload = event.payload
+    const session = payload.data.object
+    const reference = session.metadata.reference
+
     // retrieve the transaction we need to update then update status
     const transaction = await prisma.transaction.findUnique({
         where: { id: event.transactionId }
     })
     if(!transaction) {
-        console.log("No transaction for this reference")
+        console.log("No transaction for this reference:", reference)
         return
     }
     if (transaction.status === 'SUCCESS') { // have i already marked this order as paid
