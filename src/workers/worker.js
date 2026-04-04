@@ -97,6 +97,23 @@ async function processMpesaPayment(job) {
     if (!event) {
         throw new Error("Event not found")
     }
+
+    if (event.processed) {
+        console.log("Event already processed")
+        return;
+    }
+
+    // retreive the transaction for this event
+    const transaction = await prisma.transaction.findUnique({
+        where: { id: event.transactionId }
+    })
+    if(!transaction) {
+        console.log("Transaction for this reference not found")
+    }
+    if (transaction.status === "SUCCESS") {
+        console.log("Transaction already processed")
+        return;
+    }
 }
 
 const worker = new Worker('payment', async(job) => {
