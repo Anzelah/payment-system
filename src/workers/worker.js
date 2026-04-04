@@ -33,8 +33,8 @@ async function processStripePayment(job) {
         console.log("No transaction for this reference:", reference)
         return
     }
-    if (transaction.status === 'SUCCESS') { // have i already marked this order as paid
-        console.log("Transaction already updated")
+    if (transaction.status !== "PENDING") { // have i already marked this order as paid
+        console.log("Transaction already processed")
         return;
     }
     console.log("Transaction for the reference retrieved from database")
@@ -109,11 +109,13 @@ async function processMpesaPayment(job) {
     })
     if(!transaction) {
         console.log("Transaction for this reference not found")
+        return;
     }
-    if (transaction.status === "SUCCESS") {
+    if (transaction.status !== "PENDING") {
         console.log("Transaction already processed")
         return;
     }
+    //MPESA WEBHOOK/CALLBACK IMPLEMENTATION HERE
 }
 
 const worker = new Worker('payment', async(job) => {
