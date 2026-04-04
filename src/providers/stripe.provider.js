@@ -9,7 +9,7 @@ class StripeProvider {
  
         const session = await stripe.checkout.sessions.create({ // server to server communication with stripe
             mode: "payment",
-            payment_method_types: 'card',
+            payment_method_types: ['card'],
             line_items: [{
                 price_data: {
                     currency,
