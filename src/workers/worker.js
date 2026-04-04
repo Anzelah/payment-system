@@ -89,7 +89,14 @@ async function processStripePayment(job) {
 }
 
 async function processMpesaPayment(job) {
-    // worker to process mpesa payment
+    const { eventId } = job.data
+    const event = await prisma.paymentEvent.findUnique({
+        where: { id: eventId }
+    })
+
+    if (!event) {
+        throw new Error("Event not found")
+    }
 }
 
 const worker = new Worker('payment', async(job) => {
