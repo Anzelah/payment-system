@@ -23,10 +23,6 @@ class MpesaProvider {
         status: "pending",
       };
     }
-  
-    async handleWebhook(payload) {
-      console.log("M-Pesa callback received", payload);
-    }
   }
   
   module.exports = MpesaProvider;
