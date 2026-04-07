@@ -25,7 +25,7 @@ class MpesaProvider {
       };
     }
 
-    async generateToken(data) {
+    async generateToken() {
       const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
       const consumerKey = process.env.MPESA_CONSUMER_KEY
       const consumerSecret = process.env.MPESA_CONSUMER_SECRET
@@ -40,11 +40,10 @@ class MpesaProvider {
               Authorization: `Basic ${auth}`
           } 
           })
-          req.token = response.access_token
-          next()
+          return response.access_token
       } catch (error) {
           console.error(`Failed to generate access token: ${error.message}`)
-          return res.status(401).json({ error: "Incorrect or expired access token"})
+          throw error
       }
   }
 }
