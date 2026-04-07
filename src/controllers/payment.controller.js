@@ -5,7 +5,7 @@ const { randomUUID } = require("crypto")
 async function createPayment (req, res) {
     try {
         // validate inputs
-        const { userId, amount, currency, provider, idempotencyKey } = req.body
+        const { userId, amount, currency, provider, idempotencyKey, phone } = req.body
 
         if (!userId || !amount || !currency || !provider ||!idempotencyKey ) { //to replace with zod validation middleware
             return res.status(400).json({ error: "Missing required fields" })
@@ -51,7 +51,7 @@ async function createPayment (req, res) {
         // call payment service to process the payment now
         const response = await paymentService.createPayment(
             provider,
-            { amount, currency, reference: transaction.reference, transactionId: transaction.id })
+            { amount, currency, reference: transaction.reference, transactionId: transaction.id, phone })
 
         return res.json({ url: response.url })
     } catch(error) { // to replace with error handler middleware

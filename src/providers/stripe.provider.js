@@ -2,10 +2,7 @@
 class StripeProvider {
     async createPayment(data) {
       try {
-        const amount = parseInt(data.amount)
-        const currency = data.currency
-        const reference = data.reference
-        const transactionId = data.transactionId
+        const { amount, currency, reference, transactionId } = data
  
         const session = await stripe.checkout.sessions.create({ // server to server communication with stripe
             mode: "payment",
@@ -13,7 +10,7 @@ class StripeProvider {
             line_items: [{
                 price_data: {
                     currency,
-                    unit_amount: amount,
+                    unit_amount: parseInt(amount),
                     product_data: {
                       name: "payment",
                     },

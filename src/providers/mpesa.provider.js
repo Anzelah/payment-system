@@ -1,10 +1,9 @@
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
     async createPayment(data) {
-      
-      // Only implementation of the mpesa stk push(stripe-checout-session equivalent) is done here. the other is in webhook controller
-      console.log("M-Pesa payment initiated", data);
-      // what is needed in request: 
+      const { amount, currency, reference, transactionId } = data
+      url = https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest
+      const response = await axios.post(url, data)
       {
         business-short-code,
         password(passkey + business-short-code + timestamp)- Base64-encoded-string,
