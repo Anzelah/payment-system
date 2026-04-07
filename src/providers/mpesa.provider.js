@@ -1,5 +1,28 @@
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
+    async generateAccessToken() {
+      const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+      const consumerKey = process.env.MPESA_CONSUMER_KEY
+      const consumerSecret = process.env.MPESA_CONSUMER_SECRET
+
+      // BASE64 encode cnsumer key + secret
+      const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64')
+
+      // get access token
+      try {
+        const response = await axios.get(url,
+          { headers: {
+            Authorization: `Basic ${auth}`
+          } 
+        })
+        const token = response.access_token
+      } catch (error) {
+        throw new Error(`Failed to generate access token: ${error.message}`)
+      }
+
+
+
+    }
     async createPayment(data) {
       // Only implementation of the mpesa stk push(stripe-checout-session equivalent) is done here. the other is in webhook controller
       console.log("M-Pesa payment initiated", data);
