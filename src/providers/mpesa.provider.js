@@ -75,7 +75,7 @@ class MpesaProvider {
     const passkey = process.env.MPESA_PASSKEY
     const timestamp = this.generateTimestamp()
 
-    const password = Buffer.from(`${shortCode}:${passkey}:${timestamp}`).toString("base64")
+    const password = Buffer.from(`${shortCode}${passkey}${timestamp}`).toString("base64")
 
     return password
   }
