@@ -5,7 +5,7 @@ class MpesaProvider {
       if (!phone) {
         throw new Error("Phone number is required for M-Pesa payments")
       }
-      url = https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest
+      url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
       const businessCode = process.env.BUSINESS_SHORT_CODE
       const password = passkey + businessCode + timestamp
       const response = await axios.post(url, {
@@ -39,7 +39,7 @@ class MpesaProvider {
       const consumerKey = process.env.MPESA_CONSUMER_KEY
       const consumerSecret = process.env.MPESA_CONSUMER_SECRET
   
-      // BASE64 encode cnsumer key + secret
+      // BASE64 encode consumer key + secret
       const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64")
   
       // get access token
@@ -57,9 +57,16 @@ class MpesaProvider {
   }
 
   generateTimestamp() {
-    const timestamp = new Date(year, monthIndex, date, hours, minutes, seconds)
+    const date = new Date()
 
-    return timestamp
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, "0")
+    const day = String(date.getDate()).padStart(2, "0")
+    const hrs = String(date.getHours()).padStart(2, "0")
+    const min = String(date.getMinutes()).padStart(2, "0")
+    const seconds = String(date.getSeconds()).padStart(2, "0")
+
+    return `${year}${month}${day}${hrs}${min}${seconds}`
 
   }
 
