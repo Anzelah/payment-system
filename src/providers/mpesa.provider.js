@@ -1,42 +1,40 @@
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
   constructor(){
-    //this.baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
     this.consumerKey = process.env.MPESA_CONSUMER_KEY
     this.consumerSecret = process.env.MPESA_CONSUMER_SECRET
-    this.businessCode = process.env.BUSINESS_SHORT_CODE
     this.shortCode = process.env.BUSINESS_SHORT_CODE
     this.passkey = process.env.MPESA_PASSKEY
     this.callbackUrl = process.env.ESA_CALLBACK_URL
   }
     async createPayment(data) {
 
-      const { amount, phone } = data
+      const { amount, phone, reference } = data
       if (!phone) {
         throw new Error("Phone number is required for M-Pesa payments")
       }
+    
+      const timestamp = this.generateTimestamp()
+      const password = this.generatePassword(timestamp)
 
-      url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-      
+      const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+      const payload = {
+        Password: password,
+        BusinessShortCode: this.shortCode,
+        Timestamp: timestamp,
+        Amount: amount,
+        PartyA: phone,
+        PartyB: this.shortCode,
+        TransactionType: "",
+        PhoneNumber: phone,
+        AccountReference: reference,
+        CallBackURL:
+      }
       const response = await axios.post(url, {
         body: {
 
         }
       })
-
-      {
-        business-short-code,
-        password(passkey + business-short-code + timestamp)- Base64-encoded-string,
-        timestamp,
-        transaction-type,
-        amount,
-        partyA- Phone-number-receiving-money,
-        partyB - the-business-receiving-money(like-uzuri-supermarket),
-        phoneNumber - the-number-to-receive-prompt(can-be-same-as-partyA),
-        callbackUrl- the-url-where-mpesa-sends-results-to(azn-webhook),
-        AccountReference - identifier-fOr-transaction-defined-by-system(to-be-displayed-to-customer-In-prompt),
-        TransactionDesc - additional-info
-      } // all fields are mandatory except transaction desc
   
       return {
         provider: "mpesa",
@@ -78,9 +76,7 @@ class MpesaProvider {
 
   }
 
-  generatePassword() {
-    const timestamp = this.generateTimestamp()
-
+  generatePassword(timestamp) {
     const password = Buffer.from(`${this.shortCode}${this.passkey}${timestamp}`).toString("base64")
 
     return password
