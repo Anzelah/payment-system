@@ -57,6 +57,9 @@ class MpesaProvider {
   }
 
   generateTimestamp() {
+    const timestamp = new Date(year, monthIndex, date, hours, minutes, seconds)
+
+    return timestamp
 
   }
 
