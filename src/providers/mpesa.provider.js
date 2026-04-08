@@ -1,13 +1,23 @@
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
+  constructor(){
+    //this.baseUrl = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+    this.consumerKey = process.env.MPESA_CONSUMER_KEY
+    this.consumerSecret = process.env.MPESA_CONSUMER_SECRET
+    this.businessCode = process.env.BUSINESS_SHORT_CODE
+    this.shortCode = process.env.BUSINESS_SHORT_CODE
+    this.passkey = process.env.MPESA_PASSKEY
+    this.callbackUrl = process.env.ESA_CALLBACK_URL
+  }
     async createPayment(data) {
+
       const { amount, phone } = data
       if (!phone) {
         throw new Error("Phone number is required for M-Pesa payments")
       }
+
       url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-      const businessCode = process.env.BUSINESS_SHORT_CODE
-      const password = passkey + businessCode + timestamp
+      
       const response = await axios.post(url, {
         body: {
 
@@ -36,11 +46,9 @@ class MpesaProvider {
 
     async generateToken() {
       const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-      const consumerKey = process.env.MPESA_CONSUMER_KEY
-      const consumerSecret = process.env.MPESA_CONSUMER_SECRET
   
       // BASE64 encode consumer key + secret
-      const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64")
+      const auth = Buffer.from(`${this.consumerKey}:${this.consumerSecret}`).toString("base64")
   
       // get access token
       try {
@@ -71,11 +79,9 @@ class MpesaProvider {
   }
 
   generatePassword() {
-    const shortCode = process.env.BUSINESS_SHORT_CODE
-    const passkey = process.env.MPESA_PASSKEY
     const timestamp = this.generateTimestamp()
 
-    const password = Buffer.from(`${shortCode}${passkey}${timestamp}`).toString("base64")
+    const password = Buffer.from(`${this.shortCode}${this.passkey}${timestamp}`).toString("base64")
 
     return password
   }
