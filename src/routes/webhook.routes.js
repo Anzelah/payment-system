@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const axios = require("axios")
 const webhookController = require("../controllers/webhook.controller")
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

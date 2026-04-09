@@ -1,3 +1,5 @@
+const axios = require("axios")
+
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
   constructor(){
@@ -60,8 +62,8 @@ class MpesaProvider {
 
     // get access token
     try {
-        const response = await axios.get(url,
-        { headers: {
+        const response = await axios.get(url, { headers:
+          {
             Authorization: `Basic ${auth}`
           } 
         })

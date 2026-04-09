@@ -59,6 +59,7 @@ class WebhookController {
     async mpesaCallback( req, res) {
         try {
             const payload = req.body
+            console.log(`Mpesa response: ${payload}`)
             const mpesaEventId = payload.Body.stkCallback.CheckoutRequestID;
 
             if (!mpesaEventId) {
