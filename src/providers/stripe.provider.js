@@ -31,7 +31,8 @@ class StripeProvider {
           status: "PENDING"
         }
     } catch(error) {
-        next(error)
+      console.error("Stripe error:", error.message)
+      throw error
     }
   }
 }
