@@ -1,5 +1,6 @@
 const prisma = require("../utils/prisma")
 const paymentQueue = require("../queues/payment.queue")
+const { checkout } = require("../routes/webhook.routes")
 
 class WebhookController {
     async stripeWebhook(req, res) {
@@ -59,30 +60,30 @@ class WebhookController {
     async mpesaCallback( req, res) {
         try {
             const payload = req.body
-            console.log(`Mpesa response: ${payload}`)
-            const mpesaEventId = payload.Body.stkCallback.CheckoutRequestID;
+            console.log("Mpesa callback received:", JSON.stringify(payload))
 
-            if (!mpesaEventId) {
-                return res.status(400).json({ error: "Invalid payload" })
+            const stkCallback = payload.Body.stkCallback
+            if (!stkCallback) {
+                return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
             }
+            
+            const { CheckoutRequestID } = stkCallback;
 
-            // pre-check for duplicate webhooks
+            // pre-check for duplicate callbacks
             const existingEvent = await prisma.paymentEvent.findUnique({
-                where: { eventId: mpesaEventId }
+                where: { eventId: CheckoutRequestID }
             })
             if (existingEvent) {
-                console.log("Duplicate webhook")
-                return res.status(200).json({ received: true })
+                return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" })
             }
 
             // store the event first(we don't want to lose any transactions)
             const event = await prisma.paymentEvent.create({
                 data: {
-                    eventId: mpesaEventId,
+                    eventId: CheckoutRequestID,
                     type: "mpesa_callback",
                     payload,
                     processed: false
-
                 }
             })
             console.log("Mpesa callback stored")
@@ -99,18 +100,12 @@ class WebhookController {
             );
             console.log("Mpesa payment queued")
 
-            return res.json({ received: true })
+            return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
         } catch(error) {
-            if (error.code === "P2002") {
-                console.log("Duplicate webhook")
-                return res.status(200).json({ received: true })  
-            }
             console.error("Mpesa callback error:", error);
-            return res.status(500).json({ error: "callback error" });
+            return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
         }
-
     }
-
 }
 
 module.exports = new WebhookController();

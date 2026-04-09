@@ -12,7 +12,7 @@ class MpesaProvider {
 
   async createPayment(data) {
     try {
-      const { amount, phone, reference } = data
+      const { amount, phone, reference, transactionId } = data
       if (!phone) {
         throw new Error("Phone number is required for M-Pesa payments")
       }

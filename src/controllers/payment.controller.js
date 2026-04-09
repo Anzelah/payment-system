@@ -58,7 +58,7 @@ async function createPayment (req, res) {
             return res.json({
                 type: "redirect",
                 checkoutUrl: response.url
-                })
+            })
         }
         else if (response.provider === "mpesa") {
             return res.json({ 
