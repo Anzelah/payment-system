@@ -41,9 +41,9 @@ class MpesaProvider {
       })
   
       return {
+        provider: "mpesa",
         message: response.data.customerMessage,
         checkoutRequestId: response.data.CheckoutRequestID,
-        provider: "mpesa",
         status: "PENDING"
       };
     } catch(error) {

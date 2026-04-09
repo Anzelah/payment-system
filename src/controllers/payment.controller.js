@@ -51,9 +51,21 @@ async function createPayment (req, res) {
         // call payment service to process the payment now
         const response = await paymentService.createPayment(
             provider,
-            { amount, currency, reference: transaction.reference, transactionId: transaction.id, phone })
+            { amount, currency, reference: transaction.reference, transactionId: transaction.id, phone }
+        )
 
-        return res.json({ url: response.url })
+        if (response.provider === "stripe") {
+            return res.json({
+                type: "redirect",
+                checkoutUrl: response.url
+                })
+        }
+        else if (response.provider === "mpesa") {
+            return res.json({ 
+                type: "stk_push",
+                customerMessage: response.message
+            })
+        }
     } catch(error) { // to replace with error handler middleware
         console.error(error)
         res.status(500).json({ error: "Something went wrong"})
