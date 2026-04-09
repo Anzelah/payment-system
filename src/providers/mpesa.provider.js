@@ -41,7 +41,7 @@ class MpesaProvider {
       })
   
       return {
-        message: "Payment initiated succesfully",
+        message: response.data.customerMessage,
         checkoutRequestId: response.data.CheckoutRequestID,
         provider: "mpesa",
         status: "PENDING"
