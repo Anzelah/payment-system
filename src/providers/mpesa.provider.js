@@ -5,69 +5,71 @@ class MpesaProvider {
     this.consumerSecret = process.env.MPESA_CONSUMER_SECRET
     this.shortCode = process.env.BUSINESS_SHORT_CODE
     this.passkey = process.env.MPESA_PASSKEY
-    this.callbackUrl = process.env.ESA_CALLBACK_URL
+    this.callbackUrl = process.env.MPESA_CALLBACK_URL
   }
-    async createPayment(data) {
-      try {
-        const { amount, phone, reference } = data
-        if (!phone) {
-          throw new Error("Phone number is required for M-Pesa payments")
-        }
-      
-        const token = await this.generateToken()
-        const timestamp = this.generateTimestamp()
-        const password = this.generatePassword(timestamp)
 
-        const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-        const payload = {
-          Password: password,
-          BusinessShortCode: this.shortCode,
-          Timestamp: timestamp,
-          Amount: amount,
-          PartyA: phone,
-          PartyB: this.shortCode,
-          TransactionType: "CustomerPayBillOnline",
-          PhoneNumber: phone,
-          AccountReference: reference,
-          CallBackURL: this.callbackUrl
-        }
-        const response = await axios.post(url, payload, {
-          headers: { 
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          }
-        })
+  async createPayment(data) {
+    try {
+      const { amount, phone, reference } = data
+      if (!phone) {
+        throw new Error("Phone number is required for M-Pesa payments")
+      }
     
-        return {
-          message: "Payment initiated succesfully",
-          checkoutRequestId: response.data.CheckoutRequestID,
-          provider: "mpesa",
-          status: "PENDING"
-        };
-      } catch(error) {
-        console.error("Mpesa error:", error.message)
-        throw error
-      }
-    }
+      const token = await this.generateToken()
+      const timestamp = this.generateTimestamp()
+      const password = this.generatePassword(timestamp)
 
-    async generateToken() {
-      const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-  
-      // BASE64 encode consumer key + secret
-      const auth = Buffer.from(`${this.consumerKey}:${this.consumerSecret}`).toString("base64")
-  
-      // get access token
-      try {
-          const response = await axios.get(url,
-          { headers: {
-              Authorization: `Basic ${auth}`
-            } 
-          })
-          return response.access_token
-      } catch (error) {
-          console.error(`Failed to generate access token: ${error.message}`)
-          throw error
+      const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+      const payload = {
+        Password: password,
+        BusinessShortCode: this.shortCode,
+        Timestamp: timestamp,
+        Amount: amount,
+        PartyA: phone,
+        PartyB: this.shortCode,
+        TransactionType: "CustomerPayBillOnline",
+        PhoneNumber: phone,
+        AccountReference: reference,
+        CallBackURL: this.callbackUrl,
+        TransactionDesc: "payment"
       }
+      const response = await axios.post(url, payload, {
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        }
+      })
+  
+      return {
+        message: "Payment initiated succesfully",
+        checkoutRequestId: response.data.CheckoutRequestID,
+        provider: "mpesa",
+        status: "PENDING"
+      };
+    } catch(error) {
+      console.error("Mpesa error:", error.message)
+      throw error
+    }
+  }
+
+  async generateToken() {
+    const url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+
+    // BASE64 encode consumer key + secret
+    const auth = Buffer.from(`${this.consumerKey}:${this.consumerSecret}`).toString("base64")
+
+    // get access token
+    try {
+        const response = await axios.get(url,
+        { headers: {
+            Authorization: `Basic ${auth}`
+          } 
+        })
+        return response.data.access_token
+    } catch (error) {
+        console.error(`Failed to generate access token: ${error.message}`)
+        throw error
+    }
   }
 
   generateTimestamp() {
