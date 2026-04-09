@@ -8,38 +8,47 @@ class MpesaProvider {
     this.callbackUrl = process.env.ESA_CALLBACK_URL
   }
     async createPayment(data) {
-
-      const { amount, phone, reference } = data
-      if (!phone) {
-        throw new Error("Phone number is required for M-Pesa payments")
-      }
-    
-      const timestamp = this.generateTimestamp()
-      const password = this.generatePassword(timestamp)
-
-      const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
-      const payload = {
-        Password: password,
-        BusinessShortCode: this.shortCode,
-        Timestamp: timestamp,
-        Amount: amount,
-        PartyA: phone,
-        PartyB: this.shortCode,
-        TransactionType: "",
-        PhoneNumber: phone,
-        AccountReference: reference,
-        CallBackURL:
-      }
-      const response = await axios.post(url, {
-        body: {
-
+      try {
+        const { amount, phone, reference } = data
+        if (!phone) {
+          throw new Error("Phone number is required for M-Pesa payments")
         }
-      })
-  
-      return {
-        provider: "mpesa",
-        status: "pending",
-      };
+      
+        const token = this.generateToken()
+        const timestamp = this.generateTimestamp()
+        const password = this.generatePassword(timestamp)
+
+        const url = "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
+        const payload = {
+          Password: password,
+          BusinessShortCode: this.shortCode,
+          Timestamp: timestamp,
+          Amount: amount,
+          PartyA: phone,
+          PartyB: this.shortCode,
+          TransactionType: "CustomerPayBillOnline",
+          PhoneNumber: phone,
+          AccountReference: reference,
+          CallBackURL: this.callbackUrl
+        }
+        const response = await axios.post(url, {
+          headers: { 
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          }, 
+          body: JSON.stringify(payload)
+        })
+    
+        return {
+          message: "Payment initiated succesfully",
+          checkoutRequestId: response.data.CheckoutRequestID,
+          provider: "mpesa",
+          status: "PENDING"
+        };
+      } catch(error) {
+        console.error("Mpesa error:", error.message)
+        throw error
+      }
     }
 
     async generateToken() {
