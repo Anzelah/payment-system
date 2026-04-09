@@ -14,7 +14,7 @@ class MpesaProvider {
           throw new Error("Phone number is required for M-Pesa payments")
         }
       
-        const token = this.generateToken()
+        const token = await this.generateToken()
         const timestamp = this.generateTimestamp()
         const password = this.generatePassword(timestamp)
 
@@ -31,12 +31,11 @@ class MpesaProvider {
           AccountReference: reference,
           CallBackURL: this.callbackUrl
         }
-        const response = await axios.post(url, {
+        const response = await axios.post(url, payload, {
           headers: { 
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
-          }, 
-          body: JSON.stringify(payload)
+          }
         })
     
         return {
@@ -92,4 +91,4 @@ class MpesaProvider {
   }
 }
   
-  module.exports = MpesaProvider;
+module.exports = MpesaProvider;
