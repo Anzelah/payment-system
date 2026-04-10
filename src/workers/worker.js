@@ -5,11 +5,11 @@ const prisma = require("../utils/prisma")
 
 // Worker processing the job
 async function processStripePayment(job) {
-    const { eventId } = job.data
+    const { paymentEventId } = job.data
 
     // retrieve the event/job from database for processing
     const event = await prisma.paymentEvent.findUnique({
-        where: { id: eventId }
+        where: { id: paymentEventId }
     })
     if (!event) {
         throw new Error("Event not found")
@@ -89,9 +89,9 @@ async function processStripePayment(job) {
 }
 
 async function processMpesaPayment(job) {
-    const { eventId } = job.data
+    const { paymentEventId } = job.data
     const event = await prisma.paymentEvent.findUnique({
-        where: { id: eventId }
+        where: { id: paymentEventId }
     })
 
     if (!event) {
@@ -115,7 +115,11 @@ async function processMpesaPayment(job) {
         console.log("Transaction already processed")
         return;
     }
+
     //MPESA WEBHOOK/CALLBACK IMPLEMENTATION HERE
+    const payload = event.payload
+    const stkCallback = payload.Body.stkCallback
+    const { checkoutRequestId, ResultCode, ResultDesc } = stkCallback
 }
 
 const worker = new Worker('payment', async(job) => {
