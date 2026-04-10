@@ -70,6 +70,7 @@ async function processStripePayment(job) {
                 },
                 data: { status: "FAILED" },
             })
+            if (result.count === 0) return;
             console.log("Transaction status updated as FAILED")
 
             await prisma.paymentEvent.update({
@@ -144,10 +145,30 @@ async function processMpesaPayment(job) {
             console.log("Mark event as processed")
             break;
 
+        // TO ADD RETRY LOGIC FOR SOME CODES
         case 1037:
-            throw new Error("User didn't input pin on time")
-        default:
-            console.log(`Event handling failed: ${ResultDesc}.`);
+        case 1019:
+        case 1001:
+        case 1032:
+        case 2001:
+            await prisma.transaction.updateMany({
+                where: {
+                    id: transaction.id,
+                    status: 'PENDING',
+                },
+                data: { status: "FAILED" },
+            })
+            if (result.count === 0) return;
+            console.log("Transaction status updated as FAILED")
+
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+            break;
+
+        default: // unsure as to update transaction as failed here too
+            console.log(`Transaction failed: ${ResultDesc}.`);
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
