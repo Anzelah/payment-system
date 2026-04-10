@@ -78,7 +78,7 @@ class WebhookController {
             }
 
             // store the event first(we don't want to lose any transactions)
-            const event = await prisma.paymentEvent.create({
+            const paymentEvent = await prisma.paymentEvent.create({
                 data: {
                     eventId: CheckoutRequestID,
                     type: "mpesa_callback",
@@ -89,7 +89,7 @@ class WebhookController {
             console.log("Mpesa callback stored")
 
             // push to queue
-            await paymentQueue.add('mpesa-event', { eventId: event.id },
+            await paymentQueue.add('mpesa-event', { eventId: paymentEvent.id },
                 {
                     attempts: 3,
                     backoff: {
