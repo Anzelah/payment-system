@@ -119,7 +119,40 @@ async function processMpesaPayment(job) {
     //MPESA WEBHOOK/CALLBACK IMPLEMENTATION HERE
     const payload = event.payload
     const stkCallback = payload.Body.stkCallback
-    const { checkoutRequestId, ResultCode, ResultDesc } = stkCallback
+    const { ResultCode, ResultDesc } = stkCallback
+
+    switch(ResultCode) {
+        case 0:
+            const result = await prisma.transaction.updateMany({
+                where: { 
+                    id: transaction.id,
+                    status: "PENDING"
+                },
+                data: { status: "SUCCESS" }
+            })
+            if (result.count === 0) {
+                console.log("Transaction already processed by another worker")
+                return;
+            }
+            console.log("Transaction status updated to SUCCESS")
+
+            // mark event as processed
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+            console.log("Mark event as processed")
+            break;
+
+        case 1037:
+            throw new Error("User didn't input pin on time")
+        default:
+            console.log(`Event handling failed: ${ResultDesc}.`);
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
+    }
 }
 
 const worker = new Worker('payment', async(job) => {
