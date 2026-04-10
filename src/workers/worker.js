@@ -105,7 +105,7 @@ async function processMpesaPayment(job) {
 
     // retreive the transaction for this event
     const transaction = await prisma.transaction.findUnique({
-        where: { id: event.transactionId }
+        where: { checkoutRequestId: event.eventId }
     })
     if(!transaction) {
         console.log("Transaction for this reference not found")

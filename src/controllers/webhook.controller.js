@@ -35,7 +35,7 @@ class WebhookController {
             console.log("Stripe webhook stored")
 
             // add to queue
-            await paymentQueue.add( 'stripe-event', { eventId: paymentEvent.id }, // db id
+            await paymentQueue.add( 'stripe-event', { paymentEventId: paymentEvent.id }, // db id
                 {
                     attempts: 3,
                     backoff: {
@@ -89,7 +89,7 @@ class WebhookController {
             console.log("Mpesa callback stored")
 
             // push to queue
-            await paymentQueue.add('mpesa-event', { eventId: paymentEvent.id },
+            await paymentQueue.add('mpesa-event', { paymentEventId: paymentEvent.id },
                 {
                     attempts: 3,
                     backoff: {
