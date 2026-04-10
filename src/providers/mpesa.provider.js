@@ -41,11 +41,18 @@ class MpesaProvider {
           Authorization: `Bearer ${token}`,
         }
       })
+
+      // for mpesa db lookup later
+      const checkoutRequestId = response.data.CheckoutRequestID;
+      await prisma.transaction.update({
+        where: { id: transactionId },
+        data: { checkoutRequestId }
+      })
   
       return {
         provider: "mpesa",
         message: response.data.customerMessage,
-        checkoutRequestId: response.data.CheckoutRequestID,
+        checkoutRequestId,
         status: "PENDING"
       };
     } catch(error) {

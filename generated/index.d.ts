@@ -2215,6 +2215,7 @@ export namespace Prisma {
     currency: string | null
     status: $Enums.TransactionStatus | null
     idempotencyKey: string | null
+    checkoutRequestId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2228,6 +2229,7 @@ export namespace Prisma {
     currency: string | null
     status: $Enums.TransactionStatus | null
     idempotencyKey: string | null
+    checkoutRequestId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2241,6 +2243,7 @@ export namespace Prisma {
     currency: number
     status: number
     idempotencyKey: number
+    checkoutRequestId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2264,6 +2267,7 @@ export namespace Prisma {
     currency?: true
     status?: true
     idempotencyKey?: true
+    checkoutRequestId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2277,6 +2281,7 @@ export namespace Prisma {
     currency?: true
     status?: true
     idempotencyKey?: true
+    checkoutRequestId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2290,6 +2295,7 @@ export namespace Prisma {
     currency?: true
     status?: true
     idempotencyKey?: true
+    checkoutRequestId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2390,6 +2396,7 @@ export namespace Prisma {
     currency: string
     status: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId: string | null
     createdAt: Date
     updatedAt: Date
     _count: TransactionCountAggregateOutputType | null
@@ -2422,6 +2429,7 @@ export namespace Prisma {
     currency?: boolean
     status?: boolean
     idempotencyKey?: boolean
+    checkoutRequestId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2438,6 +2446,7 @@ export namespace Prisma {
     currency?: boolean
     status?: boolean
     idempotencyKey?: boolean
+    checkoutRequestId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2452,6 +2461,7 @@ export namespace Prisma {
     currency?: boolean
     status?: boolean
     idempotencyKey?: boolean
+    checkoutRequestId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2466,11 +2476,12 @@ export namespace Prisma {
     currency?: boolean
     status?: boolean
     idempotencyKey?: boolean
+    checkoutRequestId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "reference" | "amount" | "currency" | "status" | "idempotencyKey" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "reference" | "amount" | "currency" | "status" | "idempotencyKey" | "checkoutRequestId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Transaction$eventsArgs<ExtArgs>
@@ -2498,6 +2509,7 @@ export namespace Prisma {
       currency: string
       status: $Enums.TransactionStatus
       idempotencyKey: string
+      checkoutRequestId: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["transaction"]>
@@ -2933,6 +2945,7 @@ export namespace Prisma {
     readonly currency: FieldRef<"Transaction", 'String'>
     readonly status: FieldRef<"Transaction", 'TransactionStatus'>
     readonly idempotencyKey: FieldRef<"Transaction", 'String'>
+    readonly checkoutRequestId: FieldRef<"Transaction", 'String'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
     readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
   }
@@ -4504,6 +4517,7 @@ export namespace Prisma {
     currency: 'currency',
     status: 'status',
     idempotencyKey: 'idempotencyKey',
+    checkoutRequestId: 'checkoutRequestId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4547,6 +4561,14 @@ export namespace Prisma {
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
   export const JsonNullValueFilter: {
     DbNull: typeof DbNull,
     JsonNull: typeof JsonNull,
@@ -4554,14 +4576,6 @@ export namespace Prisma {
   };
 
   export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
-
-
-  export const NullsOrder: {
-    first: 'first',
-    last: 'last'
-  };
-
-  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -4734,6 +4748,7 @@ export namespace Prisma {
     currency?: StringFilter<"Transaction"> | string
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringFilter<"Transaction"> | string
+    checkoutRequestId?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -4749,6 +4764,7 @@ export namespace Prisma {
     currency?: SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
+    checkoutRequestId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -4759,6 +4775,7 @@ export namespace Prisma {
     id?: string
     reference?: string
     idempotencyKey?: string
+    checkoutRequestId?: string
     AND?: TransactionWhereInput | TransactionWhereInput[]
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
@@ -4771,7 +4788,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     events?: PaymentEventListRelationFilter
-  }, "id" | "reference" | "idempotencyKey">
+  }, "id" | "reference" | "idempotencyKey" | "checkoutRequestId">
 
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
@@ -4782,6 +4799,7 @@ export namespace Prisma {
     currency?: SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
+    checkoutRequestId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TransactionCountOrderByAggregateInput
@@ -4803,6 +4821,7 @@ export namespace Prisma {
     currency?: StringWithAggregatesFilter<"Transaction"> | string
     status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringWithAggregatesFilter<"Transaction"> | string
+    checkoutRequestId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   }
@@ -4926,6 +4945,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTransactionsInput
@@ -4941,6 +4961,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventUncheckedCreateNestedManyWithoutTransactionInput
@@ -4954,6 +4975,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
@@ -4969,6 +4991,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUncheckedUpdateManyWithoutTransactionNestedInput
@@ -4983,6 +5006,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4995,6 +5019,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5008,6 +5033,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5192,6 +5218,21 @@ export namespace Prisma {
     not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -5201,6 +5242,11 @@ export namespace Prisma {
     every?: PaymentEventWhereInput
     some?: PaymentEventWhereInput
     none?: PaymentEventWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type PaymentEventOrderByRelationAggregateInput = {
@@ -5216,6 +5262,7 @@ export namespace Prisma {
     currency?: SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
+    checkoutRequestId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5233,6 +5280,7 @@ export namespace Prisma {
     currency?: SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
+    checkoutRequestId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5246,6 +5294,7 @@ export namespace Prisma {
     currency?: SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
+    checkoutRequestId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5290,7 +5339,7 @@ export namespace Prisma {
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
   }
 
-  export type StringNullableFilter<$PrismaModel = never> = {
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5302,7 +5351,10 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -5338,11 +5390,6 @@ export namespace Prisma {
     isNot?: TransactionWhereInput | null
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type PaymentEventCountOrderByAggregateInput = {
     id?: SortOrder
     eventId?: SortOrder
@@ -5369,24 +5416,6 @@ export namespace Prisma {
     type?: SortOrder
     processed?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
   export type JsonWithAggregatesFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -5509,6 +5538,10 @@ export namespace Prisma {
     set?: $Enums.TransactionStatus
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type UserUpdateOneRequiredWithoutTransactionsNestedInput = {
     create?: XOR<UserCreateWithoutTransactionsInput, UserUncheckedCreateWithoutTransactionsInput>
     connectOrCreate?: UserCreateOrConnectWithoutTransactionsInput
@@ -5563,10 +5596,6 @@ export namespace Prisma {
     delete?: TransactionWhereInput | boolean
     connect?: TransactionWhereUniqueInput
     update?: XOR<XOR<TransactionUpdateToOneWithWhereWithoutEventsInput, TransactionUpdateWithoutEventsInput>, TransactionUncheckedUpdateWithoutEventsInput>
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -5650,6 +5679,20 @@ export namespace Prisma {
     not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedEnumPaymentProviderWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.PaymentProvider | EnumPaymentProviderFieldRefInput<$PrismaModel>
     in?: $Enums.PaymentProvider[] | ListEnumPaymentProviderFieldRefInput<$PrismaModel>
@@ -5697,25 +5740,6 @@ export namespace Prisma {
     _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
   }
 
-  export type NestedStringNullableFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5742,6 +5766,11 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -5783,6 +5812,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventCreateNestedManyWithoutTransactionInput
@@ -5796,6 +5826,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventUncheckedCreateNestedManyWithoutTransactionInput
@@ -5839,6 +5870,7 @@ export namespace Prisma {
     currency?: StringFilter<"Transaction"> | string
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringFilter<"Transaction"> | string
+    checkoutRequestId?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
   }
@@ -5948,6 +5980,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTransactionsInput
@@ -5962,6 +5995,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5990,6 +6024,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
@@ -6004,6 +6039,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6016,6 +6052,7 @@ export namespace Prisma {
     currency: string
     status?: $Enums.TransactionStatus
     idempotencyKey: string
+    checkoutRequestId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6028,6 +6065,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUpdateManyWithoutTransactionNestedInput
@@ -6041,6 +6079,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUncheckedUpdateManyWithoutTransactionNestedInput
@@ -6054,6 +6093,7 @@ export namespace Prisma {
     currency?: StringFieldUpdateOperationsInput | string
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
+    checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -42,6 +42,7 @@ model Transaction {
   currency        String
   status          TransactionStatus @default(PENDING)
   idempotencyKey  String            @unique
+  checkoutRequestId String? @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
