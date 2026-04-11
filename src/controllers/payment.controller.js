@@ -5,10 +5,11 @@ const { randomUUID } = require("crypto")
 async function createPayment (req, res) {
     try {
         // validate inputs
-        const { userId, amount, currency, provider, idempotencyKey, phone } = req.body
+        const userId = req.user.id // to implement this(userid should always come from authentication and not frontend)
+        const { amount, currency, provider, phone, idempotencyKey } = req.body
 
-        if (!userId || !amount || !currency || !provider ||!idempotencyKey ) { //to replace with zod validation middleware
-            return res.status(400).json({ error: "Missing required fields" })
+        if (!idempotencyKey ) {
+            return res.status(400).json({ error: "Missing idempotency key" })
         }
 
         // A user clicks twice unintentionally 
