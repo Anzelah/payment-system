@@ -24,6 +24,8 @@ class StripeProvider {
               transactionId //db lookup
           }
       })
+      console.log("[CHECKOUT SESSION INITIALIZED]:", { currency: currency, amount: amount, transaction_id: transactionId })
+
       return {
         message: "Payment initiated succesfully", 
         url: session.url,
@@ -31,7 +33,7 @@ class StripeProvider {
         status: "PENDING"
       }
     } catch(error) {
-      console.error("Stripe error:", error.message)
+      console.error("[STIPE PROVIDER ERROR]:", error.message)
       throw error
     }
   }

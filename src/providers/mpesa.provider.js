@@ -57,7 +57,7 @@ class MpesaProvider {
         status: "PENDING"
       };
     } catch(error) {
-      console.error("Mpesa error:", error.message)
+      console.error("[MPESA PROVIDER ERROR]:", error.message)
       throw error
     }
   }
@@ -77,7 +77,7 @@ class MpesaProvider {
         })
         return response.data.access_token
     } catch (error) {
-        console.error(`Failed to generate access token: ${error.message}`)
+        console.error(`[ SAFARICOM ACCESS TOKEN] failure: ${error.message}`)
         throw error
     }
   }
