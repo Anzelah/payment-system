@@ -54,6 +54,7 @@ async function createPayment (req, res) {
             provider,
             { amount, currency, reference: transaction.reference, transactionId: transaction.id, phone }
         )
+        console.log("[PAYMENT INIT]:", { provider: response.provider, amount: response.amount } )
 
         if (response.provider === "stripe") {
             return res.json({
