@@ -45,7 +45,7 @@ class WebhookController {
                     },
                 },
             );
-            console.log("[QUEUE] Stripe-Job added]:", { eventId: paymentEvent.id})
+            console.log("[QUEUE] Stripe-Job added]:", { eventId: paymentEvent.id, type: paymentEvent.type })
 
             return res.json({ received: true })
         } catch(error) {
@@ -89,7 +89,7 @@ class WebhookController {
                     processed: false
                 }
             })
-            console.log("[PAYMENT EVENT CREATED]:", { eventId: paymentEvent.eventId, type: paymentEvent.type })
+            console.log("[PAYMENT EVENT CREATED]:", { eventId: paymentEvent.id, type: paymentEvent.type })
 
             // push to queue
             await paymentQueue.add('mpesa-event', { paymentEventId: paymentEvent.id },
@@ -101,7 +101,7 @@ class WebhookController {
                     },
                 },
             );
-            console.log("[QUEUE] Mpesa-Job added]:", { eventId: paymentEvent.id})
+            console.log("[QUEUE] Mpesa-Job added]:", { eventId: paymentEvent.id, type: paymentEvent.type })
 
             return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
         } catch(error) {
