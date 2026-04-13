@@ -41,6 +41,7 @@ class MpesaProvider {
           Authorization: `Bearer ${token}`,
         }
       })
+      console.log("[STK-PUSH INITIALIZED]:", { phone_number: phone, amount: amount, transaction_id: transactionId })
 
       // for mpesa db lookup later
       const checkoutRequestId = response.data.CheckoutRequestID;
