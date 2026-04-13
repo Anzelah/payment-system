@@ -48,6 +48,7 @@ async function createPayment (req, res) {
                 idempotencyKey
             }
         })
+        console.log("[TRANSACTION CREATED]", { id: transaction.id, status: transaction.status })
 
         // call payment service to process the payment now
         const response = await paymentService.createPayment(
