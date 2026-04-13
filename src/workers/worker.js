@@ -15,10 +15,10 @@ async function processStripePayment(job) {
         throw new Error("Event not found")
     }
     if(event.processed) { // have i already seen this order?
-        console.log("Event already processed")
+        console.log("[WORKER] Already Processed Event", event.id)
         return;
     }
-    console.log("Payment event retrieved")
+    console.log("[WORKER] Processing Event", event.id)
 
     // retrieve stripe's sent payload/event
     const payload = event.payload
@@ -30,14 +30,14 @@ async function processStripePayment(job) {
         where: { id: event.transactionId }
     })
     if(!transaction) {
-        console.log("No transaction for this reference:", reference)
+        console.log("[WORKER ERROR] Transaction not found", { eventIdp: event.eventId, });
         return
     }
     if (transaction.status !== "PENDING") { // have i already marked this order as paid
-        console.log("Transaction already processed")
+        console.log("[WORKER ERROR] Transaction already processed", { eventIdp: event.eventId, });
         return;
     }
-    console.log("Transaction for the reference retrieved from database")
+    console.log("[WORKER] Fetching Transaction:", { transactionId: transaction.id, eventIdp: event.eventId })
 
     switch (event.type) {
         case "checkout.session.completed":
@@ -48,18 +48,18 @@ async function processStripePayment(job) {
                 },
                 data: { status: "SUCCESS" },
             })
-            console.log("Transaction status updated as SUCCESS")
             if(result.count === 0) {
-                console.log("Transaction already updated by another worker")
+                console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
                 return;
             }
+            console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
             // Mark event as done
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
-            console.log("Event marked as processed")
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
             break;
 
         case "payment_intent.payment_failed":
@@ -71,21 +71,23 @@ async function processStripePayment(job) {
                 data: { status: "FAILED" },
             })
             if (result.count === 0) return;
-            console.log("Transaction status updated as FAILED")
+            console.log("[PAYMENT FAILED]", { transactionId: transaction.id });
 
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
             break;
 
         default:
             // Unexpected event type
-            console.log(`Unhandled event type ${event.type}.`);
+            console.log("[WORKER ERROR] Unhandled job type", event.type)
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
         }
 }
 
@@ -100,22 +102,24 @@ async function processMpesaPayment(job) {
     }
 
     if (event.processed) {
-        console.log("Event already processed")
+        console.log("[WORKER] Already Processed Event", event.id)
         return;
     }
+    console.log("[WORKER] Processing Event", event.id)
 
     // retreive the transaction for this event
     const transaction = await prisma.transaction.findUnique({
         where: { checkoutRequestId: event.eventId }
     })
     if(!transaction) {
-        console.log("Transaction for this reference not found")
+        console.log("[WORKER ERROR] Transaction not found", { eventIdp: event.eventId, });
         return;
     }
     if (transaction.status !== "PENDING") {
-        console.log("Transaction already processed")
+        console.log("[WORKER ERROR] Transaction already processed", { eventIdp: event.eventId, });
         return;
     }
+    console.log("[WORKER] Fetching Transaction:", { transactionId: transaction.id, eventIdp: event.eventId })
 
     //MPESA WEBHOOK/CALLBACK IMPLEMENTATION HERE
     const payload = event.payload
@@ -132,17 +136,17 @@ async function processMpesaPayment(job) {
                 data: { status: "SUCCESS" }
             })
             if (result.count === 0) {
-                console.log("Transaction already processed by another worker")
+                console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
                 return;
             }
-            console.log("Transaction status updated to SUCCESS")
+            console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
             // mark event as processed
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
-            console.log("Mark event as processed")
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
             break;
 
         // TO ADD RETRY LOGIC FOR SOME CODES
@@ -159,12 +163,13 @@ async function processMpesaPayment(job) {
                 data: { status: "FAILED" },
             })
             if (result.count === 0) return;
-            console.log("Transaction status updated as FAILED")
+            console.log("[PAYMENT FAILED]", { transactionId: transaction.id });
 
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
             break;
 
         default: // unsure as to update transaction as failed here too
@@ -173,6 +178,7 @@ async function processMpesaPayment(job) {
                 where: { id: event.id },
                 data: { processed: true }
             })
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
     }
 }
 
@@ -186,11 +192,11 @@ const worker = new Worker('payment', async(job) => {
                 await processMpesaPayment(job)
                 break;
             default:
-                console.log("Unknown job type:", job.name)
+                console.log("[WORKER ERROR] Unknown job type", job.name)
                 return;
         } 
     } catch(error) {
-        console.error("Worker error:", error)
+        console.error("[WORKER ERROR] 500:", error)
         throw error
     }
 },
