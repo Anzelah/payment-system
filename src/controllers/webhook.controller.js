@@ -11,6 +11,7 @@ class WebhookController {
             if (!stripeEventId) {
                 return res.status(400).json({ error: "Invalid payload" })
             }
+            console.log("[STRIPE WEBHOOK RECEIVED]", event.type);
 
             // pre-check for duplication
             const existingEvent = await prisma.paymentEvent.findUnique({
@@ -67,7 +68,8 @@ class WebhookController {
                 return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
             }
             
-            const { CheckoutRequestID } = stkCallback;
+            const { CheckoutRequestID, ResultCode } = stkCallback;
+            console.log("[MPESA CALLBACK PARSED]:", { checkoutrequestId: CheckoutRequestID, Results_status: ResultCode })
 
             // pre-check for duplicate callbacks
             const existingEvent = await prisma.paymentEvent.findUnique({
