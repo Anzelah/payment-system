@@ -5,8 +5,8 @@ const { randomUUID } = require("crypto")
 async function createPayment (req, res) {
     try {
         // validate inputs
-        const userId = req.user.id // to implement this(userid should always come from authentication and not frontend)
-        const { amount, currency, provider, phone, idempotencyKey } = req.body
+        // const userId = req.user.id // to implement this(userid should always come from authentication and not frontend)
+        const { userId, amount, currency, provider, phone, idempotencyKey } = req.body
 
         if (!idempotencyKey ) {
             return res.status(400).json({ error: "Missing idempotency key" })
