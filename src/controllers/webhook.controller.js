@@ -32,7 +32,7 @@ class WebhookController {
                     processed: false
                 }
             })
-            console.log("Stripe webhook stored")
+            console.log("[PAYMENT EVENT CREATED]:", { eventId: paymentEvent.eventId, type: paymentEvent.type })
 
             // add to queue
             await paymentQueue.add( 'stripe-event', { paymentEventId: paymentEvent.id }, // db id
@@ -44,7 +44,7 @@ class WebhookController {
                     },
                 },
             );
-            console.log("Stripe payment queued")
+            console.log("[QUEUE] Stripe-Job added]:", { eventId: paymentEvent.id})
 
             return res.json({ received: true })
         } catch(error) {
@@ -60,7 +60,7 @@ class WebhookController {
     async mpesaCallback( req, res) {
         try {
             const payload = req.body
-            console.log("Mpesa callback received:", JSON.stringify(payload))
+            console.log("[MPESA CALLBACK RECEIVED]:", JSON.stringify(payload))
 
             const stkCallback = payload.Body.stkCallback
             if (!stkCallback) {
@@ -77,6 +77,7 @@ class WebhookController {
                 return res.status(200).json({ ResultCode: 0, ResultDesc: "Accepted" })
             }
 
+            // the provider always sends a unique event id for every transaction. Eventid in stripe, checkoutrequestid in mpesa
             // store the event first(we don't want to lose any transactions)
             const paymentEvent = await prisma.paymentEvent.create({
                 data: {
@@ -86,7 +87,7 @@ class WebhookController {
                     processed: false
                 }
             })
-            console.log("Mpesa callback stored")
+            console.log("[PAYMENT EVENT CREATED]:", { eventId: paymentEvent.eventId, type: paymentEvent.type })
 
             // push to queue
             await paymentQueue.add('mpesa-event', { paymentEventId: paymentEvent.id },
@@ -98,7 +99,7 @@ class WebhookController {
                     },
                 },
             );
-            console.log("Mpesa payment queued")
+            console.log("[QUEUE] Mpesa-Job added]:", { eventId: paymentEvent.id})
 
             return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
         } catch(error) {
