@@ -21,9 +21,9 @@ class WebhookController {
                 return res.status(200).json({ received: true })
             }
 
+            // store the event first(we don't want to lose any transactions)
             const session = event.data.object
             const transactionId = session.metadata.transactionId
-            // store the event first(we don't want to lose any transactions)
             const paymentEvent = await prisma.paymentEvent.create({
                 data: {
                     eventId: stripeEventId,
