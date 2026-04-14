@@ -105,7 +105,7 @@ class WebhookController {
 
             return res.json({ ResultCode: 0, ResultDesc: "Accepted" })
         } catch(error) {
-            console.error("Mpesa callback error:", error);
+            console.error("[MPESA CALLBACK ERROR]:", error);
             return res.json({ ResultCode: 0, ResultDesc: "Accepted" });
         }
     }
