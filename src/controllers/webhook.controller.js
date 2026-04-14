@@ -53,7 +53,7 @@ class WebhookController {
                 console.log("Duplicate webhook")
                 return res.status(200).json({ received: true })  
             }
-            console.error("Stripe webhook error:", error);
+            console.error("[STRIPE WEBHOOK ERROR]:", error);
             return res.status(500).json({ error: "Webhook error" });
         }
     }
