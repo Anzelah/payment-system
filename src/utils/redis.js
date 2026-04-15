@@ -1,6 +1,9 @@
-const IOredis = require("ioredis")
+const Redis = require("ioredis")
 
-// const config = { port: 6379, host: '127.0.0.1' }
-const redisConnection = new IOredis()
+const redisConnection = new Redis({
+    host: "127.0.0.1",
+    port: 6379,
+    maxRetriesPerRequest: null,
+})
 
 module.exports = redisConnection;
