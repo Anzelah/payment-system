@@ -1,5 +1,5 @@
 const { ZodError } = require("zod")
-const AppError = require("../utils/AppError");
+// const AppError = require("../utils/AppError");
 
 module.exports = (schema, property = "body") => (req, res, next) => {
     try {
