@@ -18,6 +18,7 @@ async function createPayment (req, res) {
             where: { idempotencyKey }
         })
         if (existingTransaction) {
+            console.log("IDEMPOTENT HIT:", existingTransaction.id)
             return res.status(200).json(existingTransaction)
         }
         
