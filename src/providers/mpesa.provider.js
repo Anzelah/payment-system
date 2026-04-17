@@ -1,4 +1,5 @@
 const axios = require("axios")
+const prisma = require("../utils/prisma")
 
 // function to process mpesa payments. mpesa implementation and logic goes here
 class MpesaProvider {
