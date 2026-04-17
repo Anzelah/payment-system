@@ -4,8 +4,8 @@ const { ZodError } = require("zod")
 module.exports = (schema, property = "body") => (req, res, next) => {
     try {
         schema.parse(req[property]) // validate the request
-        console.log("[ZOD VALIDATION DONE]")
         next()   
+        console.log("[ZOD VALIDATION DONE]")
     } catch(err) {
         if (err instanceof ZodError) {
             const message = err.issues.map(issue => issue.message).join(", and ");
