@@ -7,6 +7,7 @@ async function createPayment (req, res) {
         // validate inputs
         // const userId = req.user.id // to implement this(userid should always come from authentication and not frontend)
         const { userId, amount, currency, provider, phone, idempotencyKey } = req.body
+        console.log(idempotencyKey)
 
         if (!idempotencyKey ) {
             return res.status(400).json({ error: "Missing idempotency key" })
@@ -45,6 +46,7 @@ async function createPayment (req, res) {
                 amount,
                 currency,
                 status: "PENDING",
+                phone,
                 idempotencyKey
             }
         })

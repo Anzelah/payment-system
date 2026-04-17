@@ -39,10 +39,11 @@ model Transaction {
   provider        PaymentProvider
   reference       String            @unique
   amount          Int
-  currency        String
+  currency        String?
   status          TransactionStatus @default(PENDING)
   idempotencyKey  String            @unique
   checkoutRequestId String? @unique
+  phone           String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

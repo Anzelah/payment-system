@@ -136,6 +136,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
   status: 'status',
   idempotencyKey: 'idempotencyKey',
   checkoutRequestId: 'checkoutRequestId',
+  phone: 'phone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

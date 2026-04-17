@@ -2216,6 +2216,7 @@ export namespace Prisma {
     status: $Enums.TransactionStatus | null
     idempotencyKey: string | null
     checkoutRequestId: string | null
+    phone: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2230,6 +2231,7 @@ export namespace Prisma {
     status: $Enums.TransactionStatus | null
     idempotencyKey: string | null
     checkoutRequestId: string | null
+    phone: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2244,6 +2246,7 @@ export namespace Prisma {
     status: number
     idempotencyKey: number
     checkoutRequestId: number
+    phone: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2268,6 +2271,7 @@ export namespace Prisma {
     status?: true
     idempotencyKey?: true
     checkoutRequestId?: true
+    phone?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2282,6 +2286,7 @@ export namespace Prisma {
     status?: true
     idempotencyKey?: true
     checkoutRequestId?: true
+    phone?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2296,6 +2301,7 @@ export namespace Prisma {
     status?: true
     idempotencyKey?: true
     checkoutRequestId?: true
+    phone?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2393,10 +2399,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency: string | null
     status: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId: string | null
+    phone: string | null
     createdAt: Date
     updatedAt: Date
     _count: TransactionCountAggregateOutputType | null
@@ -2430,6 +2437,7 @@ export namespace Prisma {
     status?: boolean
     idempotencyKey?: boolean
     checkoutRequestId?: boolean
+    phone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2447,6 +2455,7 @@ export namespace Prisma {
     status?: boolean
     idempotencyKey?: boolean
     checkoutRequestId?: boolean
+    phone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2462,6 +2471,7 @@ export namespace Prisma {
     status?: boolean
     idempotencyKey?: boolean
     checkoutRequestId?: boolean
+    phone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -2477,11 +2487,12 @@ export namespace Prisma {
     status?: boolean
     idempotencyKey?: boolean
     checkoutRequestId?: boolean
+    phone?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "reference" | "amount" | "currency" | "status" | "idempotencyKey" | "checkoutRequestId" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "provider" | "reference" | "amount" | "currency" | "status" | "idempotencyKey" | "checkoutRequestId" | "phone" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     events?: boolean | Transaction$eventsArgs<ExtArgs>
@@ -2506,10 +2517,11 @@ export namespace Prisma {
       provider: $Enums.PaymentProvider
       reference: string
       amount: number
-      currency: string
+      currency: string | null
       status: $Enums.TransactionStatus
       idempotencyKey: string
       checkoutRequestId: string | null
+      phone: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["transaction"]>
@@ -2946,6 +2958,7 @@ export namespace Prisma {
     readonly status: FieldRef<"Transaction", 'TransactionStatus'>
     readonly idempotencyKey: FieldRef<"Transaction", 'String'>
     readonly checkoutRequestId: FieldRef<"Transaction", 'String'>
+    readonly phone: FieldRef<"Transaction", 'String'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
     readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
   }
@@ -4518,6 +4531,7 @@ export namespace Prisma {
     status: 'status',
     idempotencyKey: 'idempotencyKey',
     checkoutRequestId: 'checkoutRequestId',
+    phone: 'phone',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4745,10 +4759,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFilter<"Transaction"> | $Enums.PaymentProvider
     reference?: StringFilter<"Transaction"> | string
     amount?: IntFilter<"Transaction"> | number
-    currency?: StringFilter<"Transaction"> | string
+    currency?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringFilter<"Transaction"> | string
     checkoutRequestId?: StringNullableFilter<"Transaction"> | string | null
+    phone?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -4761,10 +4776,11 @@ export namespace Prisma {
     provider?: SortOrder
     reference?: SortOrder
     amount?: SortOrder
-    currency?: SortOrder
+    currency?: SortOrderInput | SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
     checkoutRequestId?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -4782,8 +4798,9 @@ export namespace Prisma {
     userId?: StringFilter<"Transaction"> | string
     provider?: EnumPaymentProviderFilter<"Transaction"> | $Enums.PaymentProvider
     amount?: IntFilter<"Transaction"> | number
-    currency?: StringFilter<"Transaction"> | string
+    currency?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
+    phone?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -4796,10 +4813,11 @@ export namespace Prisma {
     provider?: SortOrder
     reference?: SortOrder
     amount?: SortOrder
-    currency?: SortOrder
+    currency?: SortOrderInput | SortOrder
     status?: SortOrder
     idempotencyKey?: SortOrder
     checkoutRequestId?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TransactionCountOrderByAggregateInput
@@ -4818,10 +4836,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderWithAggregatesFilter<"Transaction"> | $Enums.PaymentProvider
     reference?: StringWithAggregatesFilter<"Transaction"> | string
     amount?: IntWithAggregatesFilter<"Transaction"> | number
-    currency?: StringWithAggregatesFilter<"Transaction"> | string
+    currency?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusWithAggregatesFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringWithAggregatesFilter<"Transaction"> | string
     checkoutRequestId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
   }
@@ -4942,10 +4961,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTransactionsInput
@@ -4958,10 +4978,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventUncheckedCreateNestedManyWithoutTransactionInput
@@ -4972,10 +4993,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
@@ -4988,10 +5010,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUncheckedUpdateManyWithoutTransactionNestedInput
@@ -5003,10 +5026,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -5016,10 +5040,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5030,10 +5055,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -5211,13 +5237,6 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
-  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5231,6 +5250,13 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type EnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
   export type UserScalarRelationFilter = {
@@ -5263,6 +5289,7 @@ export namespace Prisma {
     status?: SortOrder
     idempotencyKey?: SortOrder
     checkoutRequestId?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5281,6 +5308,7 @@ export namespace Prisma {
     status?: SortOrder
     idempotencyKey?: SortOrder
     checkoutRequestId?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5295,6 +5323,7 @@ export namespace Prisma {
     status?: SortOrder
     idempotencyKey?: SortOrder
     checkoutRequestId?: SortOrder
+    phone?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -5329,16 +5358,6 @@ export namespace Prisma {
     _max?: NestedIntFilter<$PrismaModel>
   }
 
-  export type EnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
-    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
-  }
-
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5355,6 +5374,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type EnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -5534,12 +5563,12 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnumTransactionStatusFieldUpdateOperationsInput = {
-    set?: $Enums.TransactionStatus
-  }
-
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type EnumTransactionStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TransactionStatus
   }
 
   export type UserUpdateOneRequiredWithoutTransactionsNestedInput = {
@@ -5672,13 +5701,6 @@ export namespace Prisma {
     not?: NestedEnumPaymentProviderFilter<$PrismaModel> | $Enums.PaymentProvider
   }
 
-  export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5691,6 +5713,13 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
+  export type NestedEnumTransactionStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusFilter<$PrismaModel> | $Enums.TransactionStatus
   }
 
   export type NestedEnumPaymentProviderWithAggregatesFilter<$PrismaModel = never> = {
@@ -5730,16 +5759,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
-    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
-  }
-
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -5766,6 +5785,16 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TransactionStatus | EnumTransactionStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TransactionStatus[] | ListEnumTransactionStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTransactionStatusWithAggregatesFilter<$PrismaModel> | $Enums.TransactionStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTransactionStatusFilter<$PrismaModel>
+    _max?: NestedEnumTransactionStatusFilter<$PrismaModel>
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -5809,10 +5838,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventCreateNestedManyWithoutTransactionInput
@@ -5823,10 +5853,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     events?: PaymentEventUncheckedCreateNestedManyWithoutTransactionInput
@@ -5867,10 +5898,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFilter<"Transaction"> | $Enums.PaymentProvider
     reference?: StringFilter<"Transaction"> | string
     amount?: IntFilter<"Transaction"> | number
-    currency?: StringFilter<"Transaction"> | string
+    currency?: StringNullableFilter<"Transaction"> | string | null
     status?: EnumTransactionStatusFilter<"Transaction"> | $Enums.TransactionStatus
     idempotencyKey?: StringFilter<"Transaction"> | string
     checkoutRequestId?: StringNullableFilter<"Transaction"> | string | null
+    phone?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
     updatedAt?: DateTimeFilter<"Transaction"> | Date | string
   }
@@ -5977,10 +6009,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTransactionsInput
@@ -5992,10 +6025,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6021,10 +6055,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
@@ -6036,10 +6071,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6049,10 +6085,11 @@ export namespace Prisma {
     provider: $Enums.PaymentProvider
     reference: string
     amount: number
-    currency: string
+    currency?: string | null
     status?: $Enums.TransactionStatus
     idempotencyKey: string
     checkoutRequestId?: string | null
+    phone?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6062,10 +6099,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUpdateManyWithoutTransactionNestedInput
@@ -6076,10 +6114,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     events?: PaymentEventUncheckedUpdateManyWithoutTransactionNestedInput
@@ -6090,10 +6129,11 @@ export namespace Prisma {
     provider?: EnumPaymentProviderFieldUpdateOperationsInput | $Enums.PaymentProvider
     reference?: StringFieldUpdateOperationsInput | string
     amount?: IntFieldUpdateOperationsInput | number
-    currency?: StringFieldUpdateOperationsInput | string
+    currency?: NullableStringFieldUpdateOperationsInput | string | null
     status?: EnumTransactionStatusFieldUpdateOperationsInput | $Enums.TransactionStatus
     idempotencyKey?: StringFieldUpdateOperationsInput | string
     checkoutRequestId?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
