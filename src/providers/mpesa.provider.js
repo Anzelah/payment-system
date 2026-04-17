@@ -52,6 +52,7 @@ class MpesaProvider {
       })
   
       return {
+        amount,
         provider: "mpesa",
         message: response.data.customerMessage,
         checkoutRequestId,

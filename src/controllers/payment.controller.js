@@ -29,7 +29,7 @@ async function createPayment (req, res) {
                 currency,
                 status: "PENDING",
                 createdAt: { 
-                    gte: new Date(Date.now() - 5 * 60 * 1000) // last 5 minutes
+                    gte: new Date(Date.now() - 1 * 60 * 1000) // TO CHANGE TO LAST 5 MINUTES AFTER TESTING
                 },
             },
         })
@@ -68,7 +68,7 @@ async function createPayment (req, res) {
         else if (response.provider === "mpesa") {
             return res.json({ 
                 type: "stk_push",
-                customerMessage: response.message
+                message: response.message || "STK push sent to phone"
             })
         }
     } catch(error) { // to replace with error handler middleware
