@@ -1,6 +1,6 @@
 const prisma = require("../utils/prisma")
 const paymentQueue = require("../queues/payment.queue")
-const { checkout } = require("../routes/webhook.routes")
+//const { checkout } = require("../routes/webhook.routes")
 
 class WebhookController {
     async stripeWebhook(req, res) {
