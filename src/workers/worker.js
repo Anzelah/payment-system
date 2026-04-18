@@ -23,7 +23,6 @@ async function processStripePayment(job) {
     // retrieve stripe's sent payload/event
     const payload = event.payload
     const session = payload.data.object
-    const reference = session.metadata.reference
 
     // retrieve the transaction we need to update then update status
     const transaction = await prisma.transaction.findUnique({
