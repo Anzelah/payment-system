@@ -5,6 +5,7 @@ const prisma = require("../utils/prisma")
 
 // Worker processing the job
 async function processStripePayment(job) {
+    console.log('Worker running')
     const { paymentEventId } = job.data
 
     // retrieve the event/job from database for processing
@@ -181,7 +182,8 @@ async function processMpesaPayment(job) {
     }
 }
 
-const worker = new Worker('payment', async(job) => {
+
+const worker = new Worker('payment-events', async(job) => {
     try {
         switch(job.name) {
             case 'stripe-event':
