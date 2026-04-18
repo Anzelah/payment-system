@@ -5,7 +5,6 @@ const prisma = require("../utils/prisma")
 
 // Worker processing the job
 async function processStripePayment(job) {
-    console.log('Worker running')
     const { paymentEventId } = job.data
 
     // retrieve the event/job from database for processing
@@ -105,7 +104,7 @@ async function processMpesaPayment(job) {
         console.log("[WORKER] Already Processed Event", event.id)
         return;
     }
-    console.log("[WORKER] Processing Event", event.id)
+    console.log("[WORKER] Processing Event:", event.id)
 
     // retreive the transaction for this event
     const transaction = await prisma.transaction.findUnique({
@@ -155,14 +154,14 @@ async function processMpesaPayment(job) {
         case 1001:
         case 1032:
         case 2001:
-            await prisma.transaction.updateMany({
+            const results = await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
                     status: 'PENDING',
                 },
                 data: { status: "FAILED" },
             })
-            if (result.count === 0) return;
+            if (results.count === 0) return;
             console.log("[PAYMENT FAILED]", { transactionId: transaction.id });
 
             await prisma.paymentEvent.update({
