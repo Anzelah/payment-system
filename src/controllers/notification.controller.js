@@ -8,6 +8,7 @@ async function getTransactionStatus(req, res) {
         if (!reference) {
             return res.status(400).json({ error: "Missing required fieds"})
         }
+        console.log("[REFERENCE PRESENT]:", reference)
 
         const transaction = await prisma.transaction.findUnique({
             where: { reference }
@@ -15,6 +16,7 @@ async function getTransactionStatus(req, res) {
         if (!transaction) {
             return res.status(404).json({ error: "Could not find the transaction for this reference"})
         }
+        console.log("[NOTIFICATION PROCESS] Transaction found:", transaction.id)
 
         res.json({
             status: transaction.status,

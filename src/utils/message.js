@@ -11,4 +11,11 @@ function getUserMessage(status) {
     }
 }
 
+/*{
+    "amount": 1,
+    "provider": "mpesa",
+    "phone": "254728448629",
+    "idempotencyKey": "40073e56-1365-4a7d-a164-daacf6f188c4"
+} */
+
 module.exports = getUserMessage
