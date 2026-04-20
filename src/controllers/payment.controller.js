@@ -1,6 +1,7 @@
 const prisma = require('../utils/prisma')
 const paymentService = require("../app")
 const { randomUUID } = require("crypto")
+const withRetry = require("../utils/withRetry")
 
 async function createPayment (req, res) {
     try {
@@ -38,7 +39,7 @@ async function createPayment (req, res) {
         }
 
         // create the transaction in the db
-        const transaction = await prisma.transaction.create({
+        const transaction = await withRetry(() => prisma.transaction.create({
             data: {
                 userId,
                 provider: provider.toUpperCase(),
@@ -50,6 +51,7 @@ async function createPayment (req, res) {
                 idempotencyKey
             }
         })
+        )
         console.log("[TRANSACTION CREATED]", { id: transaction.id, status: transaction.status })
 
         // call payment service to process the payment now

@@ -1,5 +1,6 @@
 const prisma = require("../utils/prisma")
 const getUserMessage = require("../utils/message")
+const withRetry = require("../utils/withRetry")
 
 
 async function getTransactionStatus(req, res) {
@@ -10,9 +11,11 @@ async function getTransactionStatus(req, res) {
         }
         console.log("[REFERENCE PRESENT]:", reference)
 
-        const transaction = await prisma.transaction.findUnique({
-            where: { reference }
-        })
+        const transaction = await withRetry(() =>
+            prisma.transaction.findUnique({
+                where: { reference }
+            })
+        )
         if (!transaction) {
             return res.status(404).json({ error: "Could not find the transaction for this reference"})
         }
