@@ -1,4 +1,6 @@
 // function to process all stripe payments. stripe implementation and logic goes here
+const stripe = require("../utils/stripe")
+
 class StripeProvider {
   async createPayment(data) {
     try {
@@ -33,7 +35,7 @@ class StripeProvider {
         status: "PENDING"
       }
     } catch(error) {
-      console.error("[STIPE PROVIDER ERROR]:", error.message)
+      console.error("[STRIPE PROVIDER ERROR]:", error.message)
       throw error
     }
   }
