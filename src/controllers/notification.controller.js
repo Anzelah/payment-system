@@ -1,6 +1,6 @@
 const prisma = require("../utils/prisma")
 const getUserMessage = require("../utils/message")
-const withRetry = require("../utils/withRetry")
+const withRetry = require("../utils/dbRetry")
 
 
 async function getTransactionStatus(req, res) {

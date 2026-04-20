@@ -1,7 +1,7 @@
 const prisma = require('../utils/prisma')
 const paymentService = require("../app")
 const { randomUUID } = require("crypto")
-const withRetry = require("../utils/withRetry")
+const withRetry = require("../utils/dbRetry")
 
 async function createPayment (req, res) {
     try {

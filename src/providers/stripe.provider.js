@@ -17,8 +17,8 @@ class StripeProvider {
               },
               quantity: 1,
               }],
-          success_url: 'http://localhost:3000/dashboard?stripe=success',
-          cancel_url: 'http://localhost:3000/dashboard?stripe=cancel',
+          success_url: 'http://localhost:5000/dashboard?stripe=success',
+          cancel_url: 'http://localhost:5000/dashboard?stripe=cancel',
           metadata: {
               reference,
               transactionId //db lookup
