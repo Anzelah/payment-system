@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const stripe = require("../utils/stripe")
 const webhookController = require("../controllers/webhook.controller")
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-router.post("/stripe", express.raw({ type: "application/json" }), async(req, res, next) => {
+router.post("/", express.raw({ type: "application/json" }), async(req, res, next) => {
     let event;
     // Verify stripe signature
     const sig = req.headers['stripe-signature']
@@ -13,7 +14,8 @@ router.post("/stripe", express.raw({ type: "application/json" }), async(req, res
             req.body,
             sig,
             endpointSecret
-        ) 
+        )
+        console.log("Verification done!")
         req.stripeEvent = event
         next()
     } catch(error) {
@@ -21,7 +23,5 @@ router.post("/stripe", express.raw({ type: "application/json" }), async(req, res
         return res.status(400).send(`Webhook error:  ${error.message}`)
     }
 }, webhookController.stripeWebhook)
-
-router.post("/mpesa", webhookController.mpesaCallback)
 
 module.exports = router;
