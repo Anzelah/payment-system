@@ -41,6 +41,19 @@ async function processStripePayment(job) {
     console.log("[WORKER] Fetching Transaction:", { transactionId: transaction.id, eventIdp: event.eventId })
 
     switch (event.type) {
+        case "checkout.session.completed":
+            const result = await prisma.transaction.updateMany({
+                where: {
+                    id: transaction.id,
+                    status: 'PENDING',
+                },
+                data: { status: "PROCESSING" },
+            })
+            if(result.count === 0) {
+                console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
+                return;
+            }
+            console.log("[PAYMENT PROCESSING]:", {transactionId: transaction.id })
         case "payment_intent.succeeded":
             const result = await prisma.transaction.updateMany({
                 where: {
