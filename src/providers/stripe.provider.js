@@ -19,6 +19,12 @@ class StripeProvider {
               },
               quantity: 1,
               }],
+          payment_intent_data: {
+            metadata: {
+              reference,
+              transactionId
+            }
+          },
           success_url: 'http://localhost:5000/dashboard?stripe=success',
           cancel_url: 'http://localhost:5000/dashboard?stripe=cancel',
           metadata: {
