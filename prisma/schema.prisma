@@ -23,6 +23,7 @@ enum TransactionStatus {
   PENDING
   SUCCESS
   FAILED
+  PROCESSING
 }
 
 model User {

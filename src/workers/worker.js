@@ -41,7 +41,7 @@ async function processStripePayment(job) {
     console.log("[WORKER] Fetching Transaction:", { transactionId: transaction.id, eventIdp: event.eventId })
 
     switch (event.type) {
-        case "checkout.session.completed":
+        case "payment_intent.succeeded":
             const result = await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
@@ -82,7 +82,7 @@ async function processStripePayment(job) {
             break;
 
         default:
-            // Unexpected event type
+            // checkout.session.completed should remain on processing.
             console.log("[WORKER ERROR] Unhandled job type", event.type)
             await prisma.paymentEvent.update({
                 where: { id: event.id },

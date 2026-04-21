@@ -183,7 +183,8 @@ exports.PaymentProvider = exports.$Enums.PaymentProvider = {
 exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',
-  FAILED: 'FAILED'
+  FAILED: 'FAILED',
+  PROCESSING: 'PROCESSING'
 };
 
 exports.Prisma.ModelName = {
