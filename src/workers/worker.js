@@ -96,7 +96,7 @@ async function processStripePayment(job) {
             break;
 
         default:
-            // checkout.session.completed should remain on processing.
+            // unhandled event type from stripe(probably unnecessary)
             console.log("[WORKER ERROR] Unhandled job type", event.type)
             await prisma.paymentEvent.update({
                 where: { id: event.id },
