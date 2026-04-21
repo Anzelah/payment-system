@@ -54,11 +54,12 @@ async function processStripePayment(job) {
                 return;
             }
             console.log("[PAYMENT PROCESSING]:", {transactionId: transaction.id })
+            break;
         case "payment_intent.succeeded":
             const result = await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
-                    status: 'PENDING',
+                    status: { in: ["PENDING", "PROCESSING"] },
                 },
                 data: { status: "SUCCESS" },
             })
@@ -80,7 +81,7 @@ async function processStripePayment(job) {
             await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
-                    status: 'PENDING',
+                    status: { in: ["PENDING", "PROCESSING"] }
                 },
                 data: { status: "FAILED" },
             })
