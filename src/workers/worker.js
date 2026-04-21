@@ -11,6 +11,7 @@ async function processStripePayment(job) {
     const event = await prisma.paymentEvent.findUnique({
         where: { id: paymentEventId }
     })
+    console.log(event)
     if (!event) {
         throw new Error("Event not found")
     }
@@ -22,6 +23,7 @@ async function processStripePayment(job) {
 
     // retrieve stripe's sent payload/event
     const payload = event.payload
+    console.log(payload)
     const session = payload.data.object
 
     // retrieve the transaction we need to update then update status

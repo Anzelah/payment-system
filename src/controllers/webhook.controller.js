@@ -21,8 +21,15 @@ class WebhookController {
                 return res.status(200).json({ received: true })
             }
 
+            // only store checkout.session.completed
+            const allowedEvent = ["checkout.session.completed"]
+            if (!allowedEvent.includes(event.type)) {
+                return res.status(200).json({ received: true })
+            }
+
             // store the event first(we don't want to lose any transactions)
             const session = event.data.object
+            console.log("[STRIPE WEBHOOK] before storing:", session.metadata)
             const transactionId = session.metadata.transactionId
             const paymentEvent = await prisma.paymentEvent.create({
                 data: {
