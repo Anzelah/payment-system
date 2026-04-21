@@ -42,14 +42,14 @@ async function processStripePayment(job) {
 
     switch (event.type) {
         case "checkout.session.completed":
-            const result = await prisma.transaction.updateMany({
+            const reslt = await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
                     status: 'PENDING',
                 },
                 data: { status: "PROCESSING" },
             })
-            if(result.count === 0) {
+            if(reslt.count === 0) {
                 console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
                 return;
             }
