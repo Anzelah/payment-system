@@ -1,4 +1,4 @@
-async function withRetry(fn, retries = 2, delay = 500) {
+async function withRetry(fn, retries = 2, delay = 2000) {
     try {
         return await fn();
     } catch (err) {
