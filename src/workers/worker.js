@@ -38,34 +38,30 @@ async function processStripePayment(job) {
 
     switch (event.type) {
         case "checkout.session.completed":
-            const reslt = await prisma.transaction.updateMany({
+            await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
                     status: 'PENDING',
                 },
                 data: { status: "PROCESSING" },
             })
-            if(reslt.count === 0) {
-                console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
-            }
+            console.log("[PAYMENT PROCESSING INITIATED]", { transactionId: transaction.id });
+            
             await prisma.paymentEvent.update({
                 where: { id: event.id },
                 data: { processed: true }
             })
-            console.log("[PAYMENT PROCESSING]:", {transactionId: transaction.id })
+            console.log("[PAYMENT EVENT PROCESSED]:", { eventId: event.id, type: event.type })
             break;
 
         case "payment_intent.succeeded":
-            const result = await prisma.transaction.updateMany({
+            await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
                     status: { in: ["PENDING", "PROCESSING"] },
                 },
                 data: { status: "SUCCESS" },
             })
-            if(result.count === 0) {
-                console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
-            }
             console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
             // Mark event as done
@@ -84,8 +80,7 @@ async function processStripePayment(job) {
                 },
                 data: { status: "FAILED" },
             })
-            if (result.count === 0) return;
-            console.log("[PAYMENT FAILED]", { transactionId: transaction.id });
+            console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
             await prisma.paymentEvent.update({
                 where: { id: event.id },
