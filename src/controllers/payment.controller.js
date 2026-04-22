@@ -14,10 +14,11 @@ async function createPayment (req, res) {
         }
 
         // A user clicks twice unintentionally 
-        const existingTransaction = await withRetry(() => prisma.transaction.findUnique({
-            where: { idempotencyKey }
-        })
-        )
+        const existingTransaction = await withRetry(() =>
+            prisma.transaction.findUnique({
+                where: { idempotencyKey }
+            })
+        );
         if (existingTransaction) {
             console.log("IDEMPOTENT HIT:", existingTransaction.id)
             return res.status(200).json(existingTransaction)
