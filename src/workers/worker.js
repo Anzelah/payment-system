@@ -55,6 +55,7 @@ async function processStripePayment(job) {
             }
             console.log("[PAYMENT PROCESSING]:", {transactionId: transaction.id })
             break;
+            
         case "payment_intent.succeeded":
             const result = await prisma.transaction.updateMany({
                 where: {
