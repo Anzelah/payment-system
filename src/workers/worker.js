@@ -34,10 +34,6 @@ async function processStripePayment(job) {
         console.log("[WORKER ERROR] Transaction not found", { eventIdp: event.eventId, });
         return
     }
-    if (transaction.status !== "PENDING") { // have i already marked this order as paid
-        console.log("[WORKER ERROR] Transaction already processed", { eventIdp: event.eventId, });
-        return;
-    }
     console.log("[WORKER] Fetching Transaction:", { transactionId: transaction.id, eventIdp: event.eventId })
 
     switch (event.type) {
@@ -51,11 +47,14 @@ async function processStripePayment(job) {
             })
             if(reslt.count === 0) {
                 console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
-                return;
             }
+            await prisma.paymentEvent.update({
+                where: { id: event.id },
+                data: { processed: true }
+            })
             console.log("[PAYMENT PROCESSING]:", {transactionId: transaction.id })
             break;
-            
+
         case "payment_intent.succeeded":
             const result = await prisma.transaction.updateMany({
                 where: {
@@ -66,7 +65,6 @@ async function processStripePayment(job) {
             })
             if(result.count === 0) {
                 console.log("[RACE CONDITION ERROR] Transaction already processed by another worker", { transactionId: transaction.id });
-                return;
             }
             console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
