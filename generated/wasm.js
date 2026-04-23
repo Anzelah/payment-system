@@ -136,6 +136,7 @@ exports.Prisma.TransactionScalarFieldEnum = {
   status: 'status',
   idempotencyKey: 'idempotencyKey',
   checkoutRequestId: 'checkoutRequestId',
+  paymentIntentId: 'paymentIntentId',
   phone: 'phone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -184,7 +185,8 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',
   FAILED: 'FAILED',
-  PROCESSING: 'PROCESSING'
+  PROCESSING: 'PROCESSING',
+  REFUNDED: 'REFUNDED'
 };
 
 exports.Prisma.ModelName = {

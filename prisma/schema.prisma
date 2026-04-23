@@ -24,6 +24,7 @@ enum TransactionStatus {
   SUCCESS
   FAILED
   PROCESSING
+  REFUNDED
 }
 
 model User {
@@ -44,6 +45,7 @@ model Transaction {
   status          TransactionStatus @default(PENDING)
   idempotencyKey  String            @unique
   checkoutRequestId String? @unique
+  paymentIntentId String? @unique
   phone           String?
 
   createdAt DateTime @default(now())
