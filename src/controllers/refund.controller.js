@@ -1,48 +1,63 @@
 const prisma = require("../utils/prisma")
 const stripe = require("../utils/stripe")
 
-async function processPayments(req, res) {
-    const { reference } = req.body
-    const transaction = await prisma.transaction.findUnique({
-        where: { reference }
-    })
-
-    if (!transaction) {
-        return res.status(404).json({ error: "Transaction for this reference not found"})
+async function processRefunds(req, res) {
+    const { reference } = req.params
+    if (!reference) {
+        return res.status(400).json({ error: "Missing required reference" })
     }
 
-    switch (transaction.status) {
-        case "PROCESSING":
-        case "PENDING":
-            res.status(403).json({ error: "Cannot process this request as payment is still processing. Try again later" })
-            break;
+    try {
+        const transaction = await prisma.transaction.findUnique({
+            where: { reference }
+        })
 
-        case "FAILED":
-            res.status(403).json({ error: "Cannot process this request as the initial payment failed"})
-            break
+        if (!transaction) {
+            return res.status(404).json({ error: "Transaction for this reference not found"})
+        }
+        if (!transaction.paymentIntentId) {
+            return res.status(400).json({ error: "Transaction missing required payment intent id" })
+        }
 
-        case "REFUNDED":
-            res.status(403).json({ error: "Cannot process this request as a refund has already been made"})
-            break;
+        switch (transaction.status) {
+            case "PROCESSING":
+            case "PENDING":
+                return res.status(403).json({ error: "Payment is still processing. Try again later" })
 
-        case "SUCCESS":
-            // refund implementation here . reason includes duplicate, fraudulent
-            const refund = await stripe.refunds.create({
-                payment_intent: transaction.paymentIntentId,
-                reason: "Requested by customer"
-            })
-            if (refund.status === "succeeded") {
-                await prisma.transaction.updateMany({
-                    where: { paymentIntentId },
-                    data: { status: "REFUNDED" }
+            case "FAILED":
+                return res.status(403).json({ error: "Cannot refund a failed payment"})
+
+            case "REFUNDED":
+                return res.status(403).json({ error: "This transaction is already refunded"})
+
+            case "SUCCESS":
+                // refund implementation here . reason includes duplicate, fraudulent
+                const refund = await stripe.refunds.create({
+                    payment_intent: transaction.paymentIntentId,
+                    reason: "requested_by_customer" // in frontend, user will choose the reason then autofill here
                 })
-            }
-            break;
+                console.log("[REFUND CREATED]", refund.id);
 
-        default:
-            console.log("[REFUND FAILED] due to unknown transaction status", { transactionId: transaction.id })
-            res.status(500).json({ error: "Unknown request failed to process"})
+                if (refund.status === "succeeded") {
+                    await prisma.transaction.update({
+                        where: { reference },
+                        data: { status: "REFUNDED" }
+                    })
+                    return res.status(200).json({ message: "Your refund was successful" });
+                }
+                return res.json({ 
+                    message: "Refund is being processed",
+                    status: refund.status
+                });
+
+            default:
+                console.log("[REFUND ERROR] due to unknown transaction status", { transactionStatus: transaction.status })
+                res.status(500).json({ error: "Unknown transaction state"})
+        }
+    } catch (error) {
+        console.error("[REFUND FAILED] internal server error", err);
+        return res.status(500).json({ error: "Refund failed" });
     }
 }
 
-module.exports = processPayments;
+module.exports = processRefunds;
