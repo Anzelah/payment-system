@@ -3,6 +3,6 @@ const router = express.Router()
 const validateMiddleware = require("/middlewares/validate")
 const processRefunds = require("../controllers/refund.controller")
 
-router.post("/", processRefunds)
+router.post("/:reference", processRefunds)
 
 module.exports = router
