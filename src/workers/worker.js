@@ -80,7 +80,7 @@ async function processStripePayment(job) {
                 },
                 data: { status: "FAILED" },
             })
-            console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
+            console.log("[PAYMENT FAILED]", { transactionId: transaction.id });
 
             await prisma.paymentEvent.update({
                 where: { id: event.id },
