@@ -24,7 +24,6 @@ async function processStripePayment(job) {
     // retrieve stripe's sent payload/event
     const payload = event.payload
     const session = payload.data.object
-    const paymentIntentId = session.payment_intent
 
     // retrieve the transaction we need to update then update status
     const transaction = await prisma.transaction.findUnique({
@@ -38,15 +37,20 @@ async function processStripePayment(job) {
 
     switch (event.type) {
         case "checkout.session.completed":
+            const paymentIntentId = session.payment_intent
+
             await prisma.transaction.updateMany({
                 where: {
                     id: transaction.id,
                     status: 'PENDING',
                 },
-                data: { status: "PROCESSING" },
+                data: { 
+                    status: "PROCESSING",
+                    paymentIntentId,
+                 },
             })
             console.log("[PAYMENT PROCESSING INITIATED]", { transactionId: transaction.id });
-            console.log("PAYMENT INTENT ID] stored", paymentIntentId)
+            console.log("[PAYMENT INTENT ID] stored", paymentIntentId)
             
             await prisma.paymentEvent.update({
                 where: { id: event.id },
@@ -61,10 +65,7 @@ async function processStripePayment(job) {
                     id: transaction.id,
                     status: { in: ["PENDING", "PROCESSING"] },
                 },
-                data: { 
-                    status: "SUCCESS",
-                    paymentIntentId,
-                 },
+                data: { status: "SUCCESS" },
             })
             console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
