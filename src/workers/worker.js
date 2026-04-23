@@ -23,8 +23,8 @@ async function processStripePayment(job) {
 
     // retrieve stripe's sent payload/event
     const payload = event.payload
-    console.log(payload)
     const session = payload.data.object
+    const paymentIntentId = session.payment_intent
 
     // retrieve the transaction we need to update then update status
     const transaction = await prisma.transaction.findUnique({
@@ -60,7 +60,10 @@ async function processStripePayment(job) {
                     id: transaction.id,
                     status: { in: ["PENDING", "PROCESSING"] },
                 },
-                data: { status: "SUCCESS" },
+                data: { 
+                    status: "SUCCESS",
+                    paymentIntentId,
+                 },
             })
             console.log("[PAYMENT SUCCESS]", { transactionId: transaction.id });
 
