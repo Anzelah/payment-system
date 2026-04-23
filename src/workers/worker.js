@@ -46,6 +46,7 @@ async function processStripePayment(job) {
                 data: { status: "PROCESSING" },
             })
             console.log("[PAYMENT PROCESSING INITIATED]", { transactionId: transaction.id });
+            console.log("PAYMENT INTENT ID] stored", paymentIntentId)
             
             await prisma.paymentEvent.update({
                 where: { id: event.id },

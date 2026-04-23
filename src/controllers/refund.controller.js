@@ -26,10 +26,17 @@ async function processPayments(req, res) {
             break;
 
         case "SUCCESS":
-            // refund implementation here
+            // refund implementation here . reason includes duplicate, fraudulent
             const refund = await stripe.refunds.create({
-                
+                payment_intent: transaction.paymentIntentId,
+                reason: "Requested by customer"
             })
+            if (refund.status === "succeeded") {
+                await prisma.transaction.updateMany({
+                    where: { paymentIntentId },
+                    data: { status: "REFUNDED" }
+                })
+            }
             break;
 
         default:
