@@ -28,10 +28,9 @@ async function processRefunds(req, res) {
                 return res.status(403).json({ error: "Cannot refund a failed payment"})
 
             case "REFUNDED":
-                return res.status(403).json({ error: "This transaction is already refunded"})
+                return res.status(403).json({ error: "This transaction has already been refunded"})
 
             case "SUCCESS":
-                // refund implementation here . reason includes duplicate, fraudulent
                 const refund = await stripe.refunds.create({
                     payment_intent: transaction.paymentIntentId,
                     reason: "requested_by_customer" // in frontend, user will choose the reason then autofill here
