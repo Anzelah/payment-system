@@ -11,7 +11,6 @@ async function processStripePayment(job) {
     const event = await prisma.paymentEvent.findUnique({
         where: { id: paymentEventId }
     })
-    console.log(event)
     if (!event) {
         throw new Error("Event not found")
     }
@@ -39,15 +38,9 @@ async function processStripePayment(job) {
         case "checkout.session.completed":
             const paymentIntentId = session.payment_intent
 
-            await prisma.transaction.updateMany({
-                where: {
-                    id: transaction.id,
-                    status: 'PENDING',
-                },
-                data: { 
-                    status: "PROCESSING",
-                    paymentIntentId,
-                 },
+            await prisma.transaction.update({
+                where: { id: transaction.id },
+                data: { paymentIntentId },
             })
             console.log("[PAYMENT PROCESSING INITIATED]", { transactionId: transaction.id });
             console.log("[PAYMENT INTENT ID] stored", paymentIntentId)
