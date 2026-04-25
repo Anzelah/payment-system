@@ -73,16 +73,20 @@ async function processRefunds(req, res) {
                 })
                 console.log("[REFUND PROCESSED]", { stripeRefundId: stripeRefund.id, status: stripeRefund.status });
 
-                if (refund.status === "succeeded") {
+                if (stripeRefund.status === "succeeded" && amount === remainingAmount) {
                     await prisma.transaction.update({
                         where: { reference },
                         data: { status: "REFUNDED" }
                     })
-                    return res.status(200).json({ message: "Your refund was successful" });
+                    return res.status(200).json({ 
+                        message: "Your refund was successful",
+                        refunded: amount,
+                        remaining: remainingAmount - amount
+                    });
                 }
                 return res.json({ 
                     message: "Refund is being processed",
-                    status: refund.status
+                    status: stripeRefund.status
                 });
 
             default:
