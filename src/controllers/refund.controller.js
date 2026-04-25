@@ -35,8 +35,9 @@ async function processRefunds(req, res) {
                     payment_intent: transaction.paymentIntentId,
                     reason: "requested_by_customer" // in frontend, user will choose the reason then autofill here
                 })
-                console.log("[REFUND CREATED]", refund.id);
+                console.log("[REFUND PROCESSING INITIATED]", { stripeRefundId: refund.id });
 
+                // create it even if refund_status is pending/failed.
                 await prisma.refund.create({
                     data: {
                         transactionId: transaction.id,
@@ -46,6 +47,7 @@ async function processRefunds(req, res) {
                         status: refund.status
                     }
                 })
+                console.log("[REFUND PROCESSED]", { stripeRefundId: refund.id, status: refund.status });
 
                 if (refund.status === "succeeded") {
                     await prisma.transaction.update({
