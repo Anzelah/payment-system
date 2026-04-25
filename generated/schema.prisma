@@ -53,7 +53,20 @@ model Transaction {
 
   user User? @relation(fields: [userId], references: [id])
 
-  events PaymentEvent[]
+  events  PaymentEvent[]
+  refunds Refund[]
+}
+
+model Refund {
+  id             String   @id @default(uuid())
+  transactionId  String
+  amount         Int
+  reason         String?
+  stripeRefundId String   @unique
+  status         String
+  createdAt      DateTime @default(now())
+
+  transaction Transaction @relation(fields: [transactionId], references: [id])
 }
 
 model PaymentEvent {

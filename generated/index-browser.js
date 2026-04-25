@@ -142,6 +142,16 @@ exports.Prisma.TransactionScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.RefundScalarFieldEnum = {
+  id: 'id',
+  transactionId: 'transactionId',
+  amount: 'amount',
+  reason: 'reason',
+  stripeRefundId: 'stripeRefundId',
+  status: 'status',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.PaymentEventScalarFieldEnum = {
   id: 'id',
   eventId: 'eventId',
@@ -192,6 +202,7 @@ exports.TransactionStatus = exports.$Enums.TransactionStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   Transaction: 'Transaction',
+  Refund: 'Refund',
   PaymentEvent: 'PaymentEvent'
 };
 
