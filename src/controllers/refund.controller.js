@@ -37,6 +37,16 @@ async function processRefunds(req, res) {
                 })
                 console.log("[REFUND CREATED]", refund.id);
 
+                await prisma.refund.create({
+                    data: {
+                        transactionId: transaction.id,
+                        amount: transaction.amount,
+                        reason: refund.reason,
+                        stripeRefundId: refund.id,
+                        status: refund.status
+                    }
+                })
+
                 if (refund.status === "succeeded") {
                     await prisma.transaction.update({
                         where: { reference },
