@@ -32,7 +32,7 @@ async function processRefunds(req, res) {
 
             case "SUCCESS":
                 // retrieve requested refund amount from client
-                const amount = req.body
+                const amount = req.body.amount
                 if (!amount || amount <= 0) {
                     return res.status(400).json({ error: "Missing required field amount or invalid refund amount"})
                 }
@@ -50,6 +50,7 @@ async function processRefunds(req, res) {
                 const originalAmount = transaction.amount
                 console.log(`Original Amount ${originalAmount}`)
                 const remainingAmount = originalAmount - alreadyRefunded
+                console.log(`Remaining amount in db: ${remainingAmount}` )
 
                 // check that requested refund isnt more than remaining amount
                 if (amount > remainingAmount) {
