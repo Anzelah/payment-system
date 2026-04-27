@@ -12,7 +12,7 @@ class StripeProvider {
           line_items: [{
               price_data: {
                   currency,
-                  unit_amount: parseInt(amount),
+                  unit_amount: parseInt(amount) * 100,
                   product_data: {
                     name: "payment",
                   },
