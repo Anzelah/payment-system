@@ -32,34 +32,36 @@ async function processRefunds(req, res) {
 
             case "SUCCESS":
                 // retrieve requested refund amount from client
-                const { amount } = req.body
+                const amount = req.body
                 if (!amount || amount <= 0) {
-                    return res.status(400).json({ error: "Missing required field or invalid refund amount"})
+                    return res.status(400).json({ error: "Missing required field amount or invalid refund amount"})
                 }
 
                 // retrieve all refunds for the transaction id and calculate amount already refunded
                 const refunds = await prisma.refund.findMany({
                     where: { transactionId: transaction.id }
                 })
+                console.log("Refunds retrieved from database")
 
                 // calculate the remaining amount we do have for that transaction id
                 const alreadyRefunded = refunds.reduce((total, r) => {
                     return total += r.amount
                 }, 0)
                 const originalAmount = transaction.amount
+                console.log(`Original Amount ${originalAmount}`)
                 const remainingAmount = originalAmount - alreadyRefunded
 
                 // check that requested refund isnt more than remaining amount
                 if (amount > remainingAmount) {
                     return res.status(400).json({ error: `Refund exceeds remaining amount. Remaining: ${remainingAmount}`})
-                }
+                } 
 
                 const stripeRefund = await stripe.refunds.create({
                     payment_intent: transaction.paymentIntentId,
                     amount: amount * 100, 
                     reason: "requested_by_customer" // in frontend, user will choose the reason then autofill here
                 })
-                console.log("[PARTIAL REFUND PROCESSING INITIATED]", { stripeRefundId: stripeRefund.id });
+                console.log("[PARTIAL REFUND PROCESSING INITIATED]", { stripeRefundId: stripeRefund.id }); 
 
                 // create it even if refund_status is pending/failed.
                 await prisma.refund.create({
@@ -73,7 +75,7 @@ async function processRefunds(req, res) {
                 })
                 console.log("[REFUND PROCESSED]", { stripeRefundId: stripeRefund.id, status: stripeRefund.status });
 
-                if (stripeRefund.status === "succeeded" && amount === remainingAmount) {
+                if (stripeRefund.status === "succeeded" /*&& amount === remainingAmount*/) {
                     await prisma.transaction.update({
                         where: { reference },
                         data: { status: "REFUNDED" }
@@ -94,7 +96,7 @@ async function processRefunds(req, res) {
                 res.status(500).json({ error: "Unknown transaction state"})
         }
     } catch (error) {
-        console.error("[REFUND FAILED] internal server error", err);
+        console.error("[REFUND FAILED] internal server error", error);
         return res.status(500).json({ error: "Refund failed" });
     }
 }
