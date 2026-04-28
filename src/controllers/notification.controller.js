@@ -22,8 +22,10 @@ async function getTransactionNotification(req, res) {
         console.log("[NOTIFICATION PROCESS] Transaction found:", transaction.id)
 
         res.json({
+            reference: transaction.reference,
             status: transaction.status,
-            message: getUserMessage(transaction.status)
+            message: getUserMessage(transaction.status),
+            updatedAt: transaction.updatedAt
         })
     } catch(error) {
         res.status(500).json({ error: "Something went wrong" })
