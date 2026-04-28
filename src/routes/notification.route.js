@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const getTransactionStatus = require("../controllers/notification.controller")
+const getTransactionNotification = require("../controllers/notification.controller")
 
-router.get("/:reference", getTransactionStatus)
+router.get("/:reference/notification", getTransactionNotification)
 
 module.exports = router;
