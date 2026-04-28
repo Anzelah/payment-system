@@ -6,8 +6,10 @@ function getUserMessage(status) {
             return "Your payment was successful.";
         case "FAILED":
             return "Your payment failed or was cancelled. Please try again.";
+        case "REFUNDED":
+            return "Your payment has been refunded successfully.";
         default:
-            return "Waiting for payment confirmation..";
+            return "Awaiting payment confirmation..";
     }
 }
 
