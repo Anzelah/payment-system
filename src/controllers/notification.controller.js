@@ -3,7 +3,7 @@ const getUserMessage = require("../utils/message")
 const withRetry = require("../utils/dbRetry")
 
 
-async function getTransactionStatus(req, res) {
+async function getTransactionNotification(req, res) {
     try {
         const { reference } = req.params
         if (!reference) {
@@ -30,4 +30,4 @@ async function getTransactionStatus(req, res) {
     }
 }
 
-module.exports = getTransactionStatus
+module.exports = getTransactionNotification
