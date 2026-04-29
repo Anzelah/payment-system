@@ -54,7 +54,7 @@ async function processRefunds(req, res) {
 
                 // check that requested refund isnt more than remaining amount
                 if (amount > remainingAmount) {
-                    return res.status(400).json({ error: `Refund exceeds remaining amount. Remaining: ${remainingAmount}`})
+                    return res.status(400).json({ error: `Refund exceeds remaining amount. Remaining Amount is: ${remainingAmount}`})
                 } 
 
                 const stripeRefund = await stripe.refunds.create({
