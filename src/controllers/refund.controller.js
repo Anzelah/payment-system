@@ -31,13 +31,11 @@ async function processRefunds(req, res) {
                 return res.status(403).json({ error: "This transaction has already been refunded"})
 
             case "SUCCESS":
-                // retrieve requested refund amount from client
                 const amount = req.body.amount
                 if (!amount || amount <= 0) {
                     return res.status(400).json({ error: "Missing required field amount or invalid refund amount"})
                 }
 
-                // retrieve all refunds for the transaction id and calculate amount already refunded
                 const refunds = await prisma.refund.findMany({
                     where: { transactionId: transaction.id }
                 })
@@ -48,11 +46,8 @@ async function processRefunds(req, res) {
                     return total += r.amount
                 }, 0)
                 const originalAmount = transaction.amount
-                console.log(`Original Amount ${originalAmount}`)
                 const remainingAmount = originalAmount - alreadyRefunded
-                console.log(`Remaining amount in db: ${remainingAmount}` )
 
-                // check that requested refund isnt more than remaining amount
                 if (amount > remainingAmount) {
                     return res.status(400).json({ error: `Refund exceeds remaining amount. Remaining Amount is: ${remainingAmount}`})
                 } 
@@ -85,7 +80,7 @@ async function processRefunds(req, res) {
                         return res.status(200).json({ message: "Your payment has been fully refunded" })
                     }
                     console.log("[REFUND SUCCESS]", { reference, refunded: amount, remaining: remainingAmount - amount })
-                    
+
                     return res.status(200).json({ 
                         message: "Your partial refund was successful",
                         refunded: amount,
