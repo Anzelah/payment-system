@@ -84,6 +84,8 @@ async function processRefunds(req, res) {
                         })
                         return res.status(200).json({ message: "Your payment has been fully refunded" })
                     }
+                    console.log("[REFUND SUCCESS]", { reference, refunded: amount, remaining: remainingAmount - amount })
+                    
                     return res.status(200).json({ 
                         message: "Your partial refund was successful",
                         refunded: amount,
