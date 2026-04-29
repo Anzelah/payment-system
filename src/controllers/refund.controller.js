@@ -76,13 +76,16 @@ async function processRefunds(req, res) {
                 })
                 console.log("[REFUND PROCESSED]", { stripeRefundId: stripeRefund.id, status: stripeRefund.status });
 
-                if (stripeRefund.status === "succeeded" && amount === remainingAmount) {
-                    await prisma.transaction.update({
-                        where: { reference },
-                        data: { status: "REFUNDED" }
-                    })
+                if (stripeRefund.status === "succeeded") {
+                    if (amount === remainingAmount) {
+                        await prisma.transaction.update({
+                            where: { reference },
+                            data: { status: "REFUNDED" }
+                        })
+                        return res.status(200).json({ message: "Your payment has been fully refunded" })
+                    }
                     return res.status(200).json({ 
-                        message: "Your refund was successful",
+                        message: "Your partial refund was successful",
                         refunded: amount,
                         remaining: remainingAmount - amount
                     });
@@ -94,7 +97,7 @@ async function processRefunds(req, res) {
 
             default:
                 console.log("[REFUND ERROR] due to unknown transaction status", { transactionStatus: transaction.status })
-                res.status(500).json({ error: "Unknown transaction state"})
+                return res.status(500).json({ error: "Unknown transaction state"})
         }
     } catch (error) {
         console.error("[REFUND FAILED] internal server error", error);
