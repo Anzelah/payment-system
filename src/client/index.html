@@ -81,10 +81,17 @@
 
   <!-- Payment -->
   <input type="number" id="amount" placeholder="Amount" />
-  <select id="provider">
+
+  <select id="provider" onchange="toggleFields()">
     <option value="stripe">Stripe</option>
     <option value="mpesa">M-Pesa</option>
   </select>
+
+  <!-- Stripe only -->
+  <input type="text" id="currency" placeholder="Currency (e.g. USD)" />
+
+  <!-- M-Pesa only -->
+  <input type="text" id="phone" placeholder="Phone (2547...)" />
 
   <button onclick="initiatePayment()">Pay</button>
 
