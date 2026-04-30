@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      width: 350px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    .secondary {
+      background: #2196F3;
+    }
+
+    .secondary:hover {
+      background: #1e88e5;
+    }
+
+    .danger {
+      background: #f44336;
+    }
+
+    .danger:hover {
+      background: #d32f2f;
+    }
+
+    .output {
+      margin-top: 15px;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 6px;
+      font-size: 13px;
+      min-height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Payment Demo</h2>
+
+  <!-- Payment -->
+  <input type="number" id="amount" placeholder="Amount" />
+  <select id="provider">
+    <option value="stripe">Stripe</option>
+    <option value="mpesa">M-Pesa</option>
+  </select>
+
+  <button onclick="initiatePayment()">Pay</button>
+
+  <!-- Reference -->
+  <input type="text" id="reference" placeholder="Transaction Reference" />
+
+  <button class="secondary" onclick="checkStatus()">Check Status</button>
+  <button class="danger" onclick="refund()">Refund</button>
+
+  <div class="output" id="output">Waiting for action...</div>
+</div>
+
+<script>
+  const BASE_URL = "http://localhost:3000"; // change if needed
+
+  function setOutput(message) {
+    document.getElementById("output").innerText = message;
+  }
+
+  async function initiatePayment() {
+    const amount = document.getElementById("amount").value;
+    const provider = document.getElementById("provider").value;
+
+    if (!amount) {
+      return setOutput("Please enter amount");
+    }
+
+    try {
+      const res = await fetch(`${BASE_URL}/payments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          amount: Number(amount),
+          provider,
+          phone: "254700000000", // for mpesa demo
+          idempotencyKey: crypto.randomUUID()
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.reference) {
+        document.getElementById("reference").value = data.reference;
+      }
+
+      setOutput(data.message || JSON.stringify(data));
+    } catch (err) {
+      setOutput("Error initiating payment");
+    }
+  }
+
+  async function checkStatus() {
+    const reference = document.getElementById("reference").value;
+
+    if (!reference) {
+      return setOutput("Enter reference");
+    }
+
+    try {
+      const res = await fetch(`${BASE_URL}/notifications/${reference}`);
+      const data = await res.json();
+
+      setOutput(`Status: ${data.status} | ${data.message}`);
+    } catch (err) {
+      setOutput("Error checking status");
+    }
+  }
+
+  async function refund() {
+    const reference = document.getElementById("reference").value;
+
+    if (!reference) {
+      return setOutput("Enter reference");
+    }
+
+    try {
+      const res = await fetch(`${BASE_URL}/refunds/${reference}`, {
+        method: "POST"
+      });
+
+      const data = await res.json();
+
+      setOutput(data.message || JSON.stringify(data));
+    } catch (err) {
+      setOutput("Error processing refund");
+    }
+  }
+</script>
+
+</body>
+</html>
