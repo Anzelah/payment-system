@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Payment Demo</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,7 +19,7 @@
       background: white;
       padding: 25px;
       border-radius: 12px;
-      width: 350px;
+      width: 360px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
 
@@ -72,26 +73,37 @@
       font-size: 13px;
       min-height: 40px;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
+
 <body>
 
 <div class="container">
   <h2>Payment Demo</h2>
 
-  <!-- Payment -->
+  <!-- Amount -->
   <input type="number" id="amount" placeholder="Amount" />
 
+  <!-- Provider -->
   <select id="provider" onchange="toggleFields()">
-    <option value="stripe">Stripe</option>
+    <option value="stripe" selected>Stripe</option>
     <option value="mpesa">M-Pesa</option>
   </select>
 
-  <!-- Stripe only -->
-  <input type="text" id="currency" placeholder="Currency (e.g. USD)" />
+  <!-- Stripe only: Currency -->
+  <select id="currency">
+    <option value="USD" selected>USD - US Dollar</option>
+    <option value="EUR">EUR - Euro</option>
+    <option value="GBP">GBP - British Pound</option>
+    <option value="KSH">KSH - Kenyan Shilling</option>
+  </select>
 
-  <!-- M-Pesa only -->
-  <input type="text" id="phone" placeholder="Phone (2547...)" />
+  <!-- M-Pesa only: Phone -->
+  <input type="text" id="phone" placeholder="Phone (2547...)" class="hidden" />
 
   <button onclick="initiatePayment()">Pay</button>
 
@@ -105,7 +117,7 @@
 </div>
 
 <script>
-  const BASE_URL = "http://localhost:5000/api"; // change if needed
+  const BASE_URL = "http://localhost:5000/api";
 
   function setOutput(message) {
     document.getElementById("output").innerText = message;
@@ -142,19 +154,20 @@
     };
 
     if (provider === "stripe") {
-      if (!currency) return setOutput("Enter currency for Stripe");
       payload.currency = currency;
     }
 
     if (provider === "mpesa") {
-      if (!phone) return setOutput("Enter phone for M-Pesa");
+      if (!phone) return setOutput("Enter phone number");
       payload.phone = phone;
     }
 
     try {
       const res = await fetch(`${BASE_URL}/payments`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(payload)
       });
 
@@ -172,28 +185,38 @@
 
   async function checkStatus() {
     const reference = document.getElementById("reference").value;
+
     if (!reference) return setOutput("Enter reference");
 
-    const res = await fetch(`${BASE_URL}/notifications/${reference}`);
-    const data = await res.json();
+    try {
+      const res = await fetch(`${BASE_URL}/notifications/${reference}`);
+      const data = await res.json();
 
-    setOutput(`Status: ${data.status} | ${data.message}`);
+      setOutput(`Status: ${data.status} | ${data.message}`);
+    } catch (err) {
+      setOutput("Error checking status");
+    }
   }
 
   async function refund() {
     const reference = document.getElementById("reference").value;
+
     if (!reference) return setOutput("Enter reference");
 
-    const res = await fetch(`${BASE_URL}/refunds/${reference}`, {
-      method: "POST"
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/refunds/${reference}`, {
+        method: "POST"
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    setOutput(data.message || JSON.stringify(data));
+      setOutput(data.message || JSON.stringify(data));
+    } catch (err) {
+      setOutput("Error processing refund");
+    }
   }
 
-  // initialize on load
+  // initialize default view
   window.onload = toggleFields;
 </script>
 
