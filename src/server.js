@@ -6,7 +6,14 @@ const routes = require('./routes/index');
 const stripeWebhookRoute = require("./routes/stripeWebhook.routes");
 
 const app = express()
-app.use(cors())
+const corsOptions = {
+  origin: "http://localhost:3000",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 
 // register stripe webhook before express.json()
 app.use("/api/webhooks/stripe", stripeWebhookRoute)
