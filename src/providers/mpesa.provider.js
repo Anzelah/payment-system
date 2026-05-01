@@ -50,7 +50,7 @@ class MpesaProvider {
         where: { id: transactionId },
         data: { checkoutRequestId }
       })
-  
+ 
       return {
         amount,
         provider: "mpesa",
@@ -58,6 +58,7 @@ class MpesaProvider {
         checkoutRequestId,
         status: "PENDING"
       };
+
     } catch(error) {
       console.error("[MPESA PROVIDER ERROR]:", error.message)
       throw error
