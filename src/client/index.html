@@ -172,6 +172,18 @@
       });
 
       const data = await res.json();
+      // ✅ Auto redirect for Stripe
+      if (provider === "stripe" && (data.checkoutUrl || data.url)) {
+        const redirectUrl = data.checkoutUrl || data.url;
+
+        setOutput("Redirecting to secure Stripe checkout...");
+
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 800);
+
+        return; // stop further execution
+      }
 
       if (data.reference) {
         document.getElementById("reference").value = data.reference;
