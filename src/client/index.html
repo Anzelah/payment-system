@@ -147,6 +147,15 @@
 
     if (!amount) return setOutput("Enter amount");
 
+    // ✅ Open tab immediately (prevents popup blocking)
+    let paymentWindow = null;
+    if (provider === "stripe") {
+      paymentWindow = window.open("", "_blank");
+
+      // optional polish
+      paymentWindow.document.write("<h3 style='font-family: Arial; text-align:center; margin-top:50px;'>Loading secure payment...</h3>");
+    }
+
     const payload = {
       amount: Number(amount),
       provider,
@@ -172,17 +181,20 @@
       });
 
       const data = await res.json();
-      // ✅ Auto redirect for Stripe
+
+      // ✅ Redirect opened tab to Stripe
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
         const redirectUrl = data.checkoutUrl || data.url;
 
-        setOutput("Opening secure Stripe checkout in a new tab...");
+        setOutput("Redirecting to secure Stripe checkout...");
 
-        setTimeout(() => {
-          window.open(redirectUrl, "_blank");
-        }, 800);
+        if (paymentWindow) {
+          paymentWindow.location.href = redirectUrl;
+        } else {
+          window.location.href = redirectUrl;
+        }
 
-        return; // stop further execution
+        return;
       }
 
       if (data.reference) {
@@ -228,7 +240,6 @@
     }
   }
 
-  // initialize default view
   window.onload = toggleFields;
 </script>
 
