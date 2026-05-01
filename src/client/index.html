@@ -110,8 +110,7 @@
 
   <button onclick="initiatePayment()">Pay</button>
 
-  <input type="text" id="reference" placeholder="Transaction Reference" />
-
+  <!-- helper only -->
   <div id="helperText" class="helper"></div>
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
@@ -135,7 +134,7 @@
     if (lastReference) {
       helper.innerText = "Using last transaction automatically";
     } else {
-      helper.innerText = "";
+      helper.innerText = "No transaction yet";
     }
   }
 
@@ -147,7 +146,6 @@
     const ref = localStorage.getItem("lastReference");
     if (ref) {
       lastReference = ref;
-      document.getElementById("reference").value = ref;
     }
   }
 
@@ -210,12 +208,10 @@
 
       if (data.reference) {
         lastReference = data.reference;
-        saveReference(data.reference); // ✅ persist
-        document.getElementById("reference").value = data.reference;
+        saveReference(data.reference);
         updateHelperText();
       }
 
-      // ✅ clear amount after payment
       amountInput.value = "";
 
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
@@ -239,12 +235,10 @@
   }
 
   async function checkStatus() {
-    const reference = lastReference || document.getElementById("reference").value;
-
-    if (!reference) return setOutput("Enter reference");
+    if (!lastReference) return setOutput("No transaction available");
 
     try {
-      const res = await fetch(`${BASE_URL}/notifications/${reference}`);
+      const res = await fetch(`${BASE_URL}/notifications/${lastReference}`);
       const data = await res.json();
 
       setOutput(`Status: ${data.status} | ${data.message}`);
@@ -254,12 +248,10 @@
   }
 
   async function refund() {
-    const reference = lastReference || document.getElementById("reference").value;
-
-    if (!reference) return setOutput("Enter reference");
+    if (!lastReference) return setOutput("No transaction available");
 
     try {
-      const res = await fetch(`${BASE_URL}/refunds/${reference}`, {
+      const res = await fetch(`${BASE_URL}/refunds/${lastReference}`, {
         method: "POST"
       });
 
@@ -273,7 +265,7 @@
 
   window.onload = () => {
     toggleFields();
-    loadReference();   // ✅ restore after refresh
+    loadReference();
     updateHelperText();
   };
 </script>
