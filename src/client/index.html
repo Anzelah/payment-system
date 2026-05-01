@@ -78,7 +78,6 @@
       display: none;
     }
 
-    /* ✅ NEW subtle helper text */
     .helper {
       font-size: 12px;
       color: #666;
@@ -104,7 +103,7 @@
     <option value="USD" selected>USD - US Dollar</option>
     <option value="EUR">EUR - Euro</option>
     <option value="GBP">GBP - British Pound</option>
-    <option value="KES">KES - Kenyan Shilling</option>
+    <option value="KSH">KSH - Kenyan Shilling</option>
   </select>
 
   <input type="text" id="phone" placeholder="Phone (2547...)" class="hidden" />
@@ -113,7 +112,6 @@
 
   <input type="text" id="reference" placeholder="Transaction Reference" />
 
-  <!-- ✅ NEW helper label -->
   <div id="helperText" class="helper"></div>
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
@@ -141,6 +139,18 @@
     }
   }
 
+  function saveReference(ref) {
+    localStorage.setItem("lastReference", ref);
+  }
+
+  function loadReference() {
+    const ref = localStorage.getItem("lastReference");
+    if (ref) {
+      lastReference = ref;
+      document.getElementById("reference").value = ref;
+    }
+  }
+
   function toggleFields() {
     const provider = document.getElementById("provider").value;
 
@@ -157,7 +167,8 @@
   }
 
   async function initiatePayment() {
-    const amount = document.getElementById("amount").value;
+    const amountInput = document.getElementById("amount");
+    const amount = amountInput.value;
     const provider = document.getElementById("provider").value;
 
     const currency = document.getElementById("currency").value;
@@ -199,9 +210,13 @@
 
       if (data.reference) {
         lastReference = data.reference;
+        saveReference(data.reference); // ✅ persist
         document.getElementById("reference").value = data.reference;
-        updateHelperText(); // ✅ update label
+        updateHelperText();
       }
+
+      // ✅ clear amount after payment
+      amountInput.value = "";
 
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
         const redirectUrl = data.checkoutUrl || data.url;
@@ -258,7 +273,8 @@
 
   window.onload = () => {
     toggleFields();
-    updateHelperText(); // ✅ initialize label
+    loadReference();   // ✅ restore after refresh
+    updateHelperText();
   };
 </script>
 
