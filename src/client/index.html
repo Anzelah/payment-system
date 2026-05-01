@@ -77,6 +77,14 @@
     .hidden {
       display: none;
     }
+
+    /* ✅ NEW subtle helper text */
+    .helper {
+      font-size: 12px;
+      color: #666;
+      margin-top: 6px;
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -96,7 +104,7 @@
     <option value="USD" selected>USD - US Dollar</option>
     <option value="EUR">EUR - Euro</option>
     <option value="GBP">GBP - British Pound</option>
-    <option value="KSH">KSH - Kenyan Shilling</option>
+    <option value="KES">KES - Kenyan Shilling</option>
   </select>
 
   <input type="text" id="phone" placeholder="Phone (2547...)" class="hidden" />
@@ -104,6 +112,9 @@
   <button onclick="initiatePayment()">Pay</button>
 
   <input type="text" id="reference" placeholder="Transaction Reference" />
+
+  <!-- ✅ NEW helper label -->
+  <div id="helperText" class="helper"></div>
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
   <button class="danger" onclick="refund()">Refund</button>
@@ -114,11 +125,20 @@
 <script>
   const BASE_URL = "http://localhost:5000/api";
 
-  // ✅ NEW: store last reference automatically
   let lastReference = null;
 
   function setOutput(message) {
     document.getElementById("output").innerText = message;
+  }
+
+  function updateHelperText() {
+    const helper = document.getElementById("helperText");
+
+    if (lastReference) {
+      helper.innerText = "Using last transaction automatically";
+    } else {
+      helper.innerText = "";
+    }
   }
 
   function toggleFields() {
@@ -177,10 +197,10 @@
 
       const data = await res.json();
 
-      // ✅ store reference automatically
       if (data.reference) {
         lastReference = data.reference;
         document.getElementById("reference").value = data.reference;
+        updateHelperText(); // ✅ update label
       }
 
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
@@ -204,7 +224,6 @@
   }
 
   async function checkStatus() {
-    // ✅ use stored reference first
     const reference = lastReference || document.getElementById("reference").value;
 
     if (!reference) return setOutput("Enter reference");
@@ -220,7 +239,6 @@
   }
 
   async function refund() {
-    // ✅ use stored reference first
     const reference = lastReference || document.getElementById("reference").value;
 
     if (!reference) return setOutput("Enter reference");
@@ -238,7 +256,10 @@
     }
   }
 
-  window.onload = toggleFields;
+  window.onload = () => {
+    toggleFields();
+    updateHelperText(); // ✅ initialize label
+  };
 </script>
 
 </body>
