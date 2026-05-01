@@ -176,10 +176,10 @@
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
         const redirectUrl = data.checkoutUrl || data.url;
 
-        setOutput("Redirecting to secure Stripe checkout...");
+        setOutput("Opening secure Stripe checkout in a new tab...");
 
         setTimeout(() => {
-          window.location.href = redirectUrl;
+          window.open(redirectUrl, "_blank");
         }, 800);
 
         return; // stop further execution
