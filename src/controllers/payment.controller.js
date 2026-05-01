@@ -32,7 +32,7 @@ async function createPayment (req, res) {
                 currency,
                 status: "PENDING",
                 createdAt: { 
-                    gte: new Date(Date.now() - 1 * 60 * 1000) // TO CHANGE TO LAST 5 MINUTES AFTER TESTING
+                    gte: new Date(Date.now() - 5 * 60 * 1000) // TO CHANGE TO LAST 5 MINUTES AFTER TESTING
                 },
             },
         })
