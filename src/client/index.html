@@ -85,29 +85,24 @@
 <div class="container">
   <h2>Payment Demo</h2>
 
-  <!-- Amount -->
   <input type="number" id="amount" placeholder="Amount" />
 
-  <!-- Provider -->
   <select id="provider" onchange="toggleFields()">
     <option value="stripe" selected>Stripe</option>
     <option value="mpesa">M-Pesa</option>
   </select>
 
-  <!-- Stripe only: Currency -->
   <select id="currency">
     <option value="USD" selected>USD - US Dollar</option>
     <option value="EUR">EUR - Euro</option>
     <option value="GBP">GBP - British Pound</option>
-    <option value="KES">KES - Kenyan Shilling</option>
+    <option value="KSH">KSH - Kenyan Shilling</option>
   </select>
 
-  <!-- M-Pesa only: Phone -->
   <input type="text" id="phone" placeholder="Phone (2547...)" class="hidden" />
 
   <button onclick="initiatePayment()">Pay</button>
 
-  <!-- Reference -->
   <input type="text" id="reference" placeholder="Transaction Reference" />
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
@@ -118,6 +113,9 @@
 
 <script>
   const BASE_URL = "http://localhost:5000/api";
+
+  // ✅ NEW: store last reference automatically
+  let lastReference = null;
 
   function setOutput(message) {
     document.getElementById("output").innerText = message;
@@ -147,13 +145,10 @@
 
     if (!amount) return setOutput("Enter amount");
 
-    // ✅ Open tab immediately (prevents popup blocking)
     let paymentWindow = null;
     if (provider === "stripe") {
       paymentWindow = window.open("", "_blank");
-
-      // optional polish
-      paymentWindow.document.write("<h3 style='font-family: Arial; text-align:center; margin-top:50px;'>Redirecting you to Stripe checkout in a few seconds...</h3>");
+      paymentWindow.document.write("<h3 style='font-family: Arial; text-align:center; margin-top:50px;'>Loading secure payment...</h3>");
     }
 
     const payload = {
@@ -182,7 +177,12 @@
 
       const data = await res.json();
 
-      // ✅ Redirect opened tab to Stripe
+      // ✅ store reference automatically
+      if (data.reference) {
+        lastReference = data.reference;
+        document.getElementById("reference").value = data.reference;
+      }
+
       if (provider === "stripe" && (data.checkoutUrl || data.url)) {
         const redirectUrl = data.checkoutUrl || data.url;
 
@@ -197,10 +197,6 @@
         return;
       }
 
-      if (data.reference) {
-        document.getElementById("reference").value = data.reference;
-      }
-
       setOutput(data.message || JSON.stringify(data));
     } catch (err) {
       setOutput("Payment request failed");
@@ -208,7 +204,8 @@
   }
 
   async function checkStatus() {
-    const reference = document.getElementById("reference").value;
+    // ✅ use stored reference first
+    const reference = lastReference || document.getElementById("reference").value;
 
     if (!reference) return setOutput("Enter reference");
 
@@ -223,7 +220,8 @@
   }
 
   async function refund() {
-    const reference = document.getElementById("reference").value;
+    // ✅ use stored reference first
+    const reference = lastReference || document.getElementById("reference").value;
 
     if (!reference) return setOutput("Enter reference");
 
