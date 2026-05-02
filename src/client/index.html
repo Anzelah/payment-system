@@ -114,6 +114,10 @@
   <div id="helperText" class="helper"></div>
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
+
+  <!-- ✅ NEW: Refund Amount Input -->
+  <input type="number" id="refundAmount" placeholder="Refund Amount" />
+
   <button class="danger" onclick="refund()">Refund</button>
 
   <div class="output" id="output">Waiting for action...</div>
@@ -250,9 +254,19 @@
   async function refund() {
     if (!lastReference) return setOutput("No transaction available");
 
+    const refundAmount = document.getElementById("refundAmount").value;
+
+    if (!refundAmount) return setOutput("Enter refund amount");
+
     try {
       const res = await fetch(`${BASE_URL}/refunds/${lastReference}`, {
-        method: "POST"
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          amount: Number(refundAmount)
+        })
       });
 
       const data = await res.json();
