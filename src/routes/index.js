@@ -8,7 +8,7 @@ const refundsRoute = require("./refund.route")
 
 router.use("/payments", paymentRoutes);
 router.use("/webhooks/mpesa", mpesaWebhookRoute);
-router.use("/transactions", notificationRoutes);
+router.use("/notifications", notificationRoutes);
 router.use("/refunds", refundsRoute)
 
 module.exports = router;
