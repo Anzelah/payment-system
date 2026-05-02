@@ -195,10 +195,8 @@
   }
 
   function updateHelperText() {
-    const helper = document.getElementById("helperText");
-    helper.innerText = lastReference
-      ? "Using last transaction automatically"
-      : "No transaction yet";
+  const helper = document.getElementById("helperText");
+  helper.innerText = "";
   }
 
   function saveReference(ref) {
