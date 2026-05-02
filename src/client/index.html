@@ -43,6 +43,7 @@
       border: none;
       cursor: pointer;
       font-weight: bold;
+      position: relative;
     }
 
     button:hover {
@@ -84,6 +85,42 @@
       margin-top: 6px;
       text-align: center;
     }
+
+    /* NEW: message styles */
+    .message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .error {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    /* NEW: spinner */
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255,255,255,0.6);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      display: inline-block;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
@@ -93,6 +130,9 @@
   <h2>Payment Demo</h2>
 
   <input type="number" id="amount" placeholder="Amount" />
+
+  <!-- NEW: payment message -->
+  <div id="paymentMessage" class="message"></div>
 
   <select id="provider" onchange="toggleFields()">
     <option value="stripe" selected>Stripe</option>
@@ -108,17 +148,18 @@
 
   <input type="text" id="phone" placeholder="Phone (2547...)" class="hidden" />
 
-  <button onclick="initiatePayment()">Pay</button>
+  <button id="payBtn" onclick="initiatePayment()">Pay</button>
 
-  <!-- helper only -->
   <div id="helperText" class="helper"></div>
 
-  <button class="secondary" onclick="checkStatus()">Check Status</button>
+  <button id="statusBtn" class="secondary" onclick="checkStatus()">Check Status</button>
 
-  <!-- Refund amount (added) -->
   <input type="number" id="refundAmount" placeholder="Refund Amount" />
 
-  <button class="danger" onclick="refund()">Refund</button>
+  <!-- NEW: refund message -->
+  <div id="refundMessage" class="message"></div>
+
+  <button id="refundBtn" class="danger" onclick="refund()">Refund</button>
 
   <div class="output" id="output">Waiting for action...</div>
 </div>
@@ -128,18 +169,36 @@
 
   let lastReference = null;
 
+  function showMessage(el, message, type = "success") {
+    el.className = `message ${type}`;
+    el.innerText = message;
+    el.style.display = "block";
+
+    setTimeout(() => {
+      el.style.display = "none";
+    }, 4000);
+  }
+
+  function setLoading(btn, isLoading) {
+    if (isLoading) {
+      btn.disabled = true;
+      btn.dataset.originalText = btn.innerText;
+      btn.innerHTML = btn.innerText + ' <span class="spinner"></span>';
+    } else {
+      btn.disabled = false;
+      btn.innerText = btn.dataset.originalText;
+    }
+  }
+
   function setOutput(message) {
     document.getElementById("output").innerText = message;
   }
 
   function updateHelperText() {
     const helper = document.getElementById("helperText");
-
-    if (lastReference) {
-      helper.innerText = "Using last transaction automatically";
-    } else {
-      helper.innerText = "No transaction yet";
-    }
+    helper.innerText = lastReference
+      ? "Using last transaction automatically"
+      : "No transaction yet";
   }
 
   function saveReference(ref) {
@@ -148,14 +207,11 @@
 
   function loadReference() {
     const ref = localStorage.getItem("lastReference");
-    if (ref) {
-      lastReference = ref;
-    }
+    if (ref) lastReference = ref;
   }
 
   function toggleFields() {
     const provider = document.getElementById("provider").value;
-
     const currency = document.getElementById("currency");
     const phone = document.getElementById("phone");
 
@@ -169,20 +225,17 @@
   }
 
   async function initiatePayment() {
-    const amountInput = document.getElementById("amount");
-    const amount = amountInput.value;
-    const provider = document.getElementById("provider").value;
+    const btn = document.getElementById("payBtn");
+    const msgEl = document.getElementById("paymentMessage");
 
+    const amount = document.getElementById("amount").value;
+    const provider = document.getElementById("provider").value;
     const currency = document.getElementById("currency").value;
     const phone = document.getElementById("phone").value;
 
-    if (!amount) return setOutput("Enter amount");
+    if (!amount) return showMessage(msgEl, "Enter amount", "error");
 
-    let paymentWindow = null;
-    if (provider === "stripe") {
-      paymentWindow = window.open("", "_blank");
-      paymentWindow.document.write("<h3 style='font-family: Arial; text-align:center; margin-top:50px;'>Loading secure payment...</h3>");
-    }
+    setLoading(btn, true);
 
     const payload = {
       amount: Number(amount),
@@ -190,21 +243,20 @@
       idempotencyKey: crypto.randomUUID()
     };
 
-    if (provider === "stripe") {
-      payload.currency = currency;
-    }
+    if (provider === "stripe") payload.currency = currency;
 
     if (provider === "mpesa") {
-      if (!phone) return setOutput("Enter phone number");
+      if (!phone) {
+        setLoading(btn, false);
+        return showMessage(msgEl, "Enter phone number", "error");
+      }
       payload.phone = phone;
     }
 
     try {
       const res = await fetch(`${BASE_URL}/payments`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: {"Content-Type": "application/json"},
         body: JSON.stringify(payload)
       });
 
@@ -216,72 +268,67 @@
         updateHelperText();
       }
 
-      amountInput.value = "";
+      document.getElementById("amount").value = "";
 
-      if (provider === "stripe" && (data.checkoutUrl || data.url)) {
-        const redirectUrl = data.checkoutUrl || data.url;
+      showMessage(msgEl, data.message || "Payment initiated");
 
-        setOutput("Redirecting to secure Stripe checkout...");
-
-        if (paymentWindow) {
-          paymentWindow.location.href = redirectUrl;
-        } else {
-          window.location.href = redirectUrl;
-        }
-
-        return;
-      }
-
-      setOutput(data.message || JSON.stringify(data));
-    } catch (err) {
-      setOutput("Payment request failed");
+    } catch {
+      showMessage(msgEl, "Payment failed", "error");
+    } finally {
+      setLoading(btn, false);
     }
   }
 
   async function checkStatus() {
+    const btn = document.getElementById("statusBtn");
+
     if (!lastReference) return setOutput("No transaction available");
+
+    setLoading(btn, true);
 
     try {
       const res = await fetch(`${BASE_URL}/notifications/${lastReference}`);
       const data = await res.json();
 
-      if (data.status || data.message) {
-        setOutput(`Status: ${data.status || "unknown"} | ${data.message || ""}`);
-      } else {
-        setOutput(JSON.stringify(data));
-      }
-    } catch (err) {
+      setOutput(`Status: ${data.status || "unknown"} | ${data.message || ""}`);
+    } catch {
       setOutput("Error checking status");
+    } finally {
+      setLoading(btn, false);
     }
   }
 
   async function refund() {
-    if (!lastReference) return setOutput("No transaction available");
+    const btn = document.getElementById("refundBtn");
+    const msgEl = document.getElementById("refundMessage");
+
+    if (!lastReference) return showMessage(msgEl, "No transaction available", "error");
 
     const refundAmount = document.getElementById("refundAmount").value;
+    if (!refundAmount) return showMessage(msgEl, "Enter refund amount", "error");
 
-    if (!refundAmount) return setOutput("Enter refund amount");
+    setLoading(btn, true);
 
     try {
       const res = await fetch(`${BASE_URL}/refunds/${lastReference}`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          amount: Number(refundAmount)
-        })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ amount: Number(refundAmount) })
       });
 
       const data = await res.json();
 
       if (res.ok) {
         document.getElementById("refundAmount").value = "";
+        showMessage(msgEl, data.message || "Refund successful");
+      } else {
+        showMessage(msgEl, data.message || "Refund failed", "error");
       }
 
-      setOutput(data.message || JSON.stringify(data));
-    } catch (err) {
-      setOutput("Error processing refund");
+    } catch {
+      showMessage(msgEl, "Error processing refund", "error");
+    } finally {
+      setLoading(btn, false);
     }
   }
 
