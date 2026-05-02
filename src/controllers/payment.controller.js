@@ -66,13 +66,15 @@ async function createPayment (req, res) {
         if (response.provider === "stripe") {
             return res.json({
                 type: "redirect",
-                checkoutUrl: response.url
+                checkoutUrl: response.url,
+                reference: transaction.reference
             })
         }
         else if (response.provider === "mpesa") {
             return res.json({ 
                 type: "stk_push",
-                message: response.message || "STK push sent to phone"
+                message: response.message || "STK push sent to phone",
+                reference: transaction.reference
             })
         }
     } catch(error) { // to replace with error handler middleware
