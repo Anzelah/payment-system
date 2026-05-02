@@ -115,7 +115,7 @@
 
   <button class="secondary" onclick="checkStatus()">Check Status</button>
 
-  <!-- ✅ NEW: Refund Amount Input -->
+  <!-- Refund amount (added) -->
   <input type="number" id="refundAmount" placeholder="Refund Amount" />
 
   <button class="danger" onclick="refund()">Refund</button>
@@ -245,7 +245,11 @@
       const res = await fetch(`${BASE_URL}/notifications/${lastReference}`);
       const data = await res.json();
 
-      setOutput(`Status: ${data.status} | ${data.message}`);
+      if (data.status || data.message) {
+        setOutput(`Status: ${data.status || "unknown"} | ${data.message || ""}`);
+      } else {
+        setOutput(JSON.stringify(data));
+      }
     } catch (err) {
       setOutput("Error checking status");
     }
@@ -270,6 +274,10 @@
       });
 
       const data = await res.json();
+
+      if (res.ok) {
+        document.getElementById("refundAmount").value = "";
+      }
 
       setOutput(data.message || JSON.stringify(data));
     } catch (err) {
