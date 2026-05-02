@@ -35,6 +35,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 14px;
+      box-sizing: border-box; /* ✅ FIXED ALIGNMENT */
     }
 
     button {
@@ -66,15 +67,6 @@
       background: #d32f2f;
     }
 
-    .output {
-      margin-top: 15px;
-      padding: 10px;
-      background: #f1f1f1;
-      border-radius: 6px;
-      font-size: 13px;
-      min-height: 40px;
-    }
-
     .hidden {
       display: none;
     }
@@ -86,7 +78,6 @@
       text-align: center;
     }
 
-    /* NEW: message styles */
     .message {
       margin-top: 10px;
       padding: 10px;
@@ -105,7 +96,6 @@
       color: #c62828;
     }
 
-    /* NEW: spinner */
     .spinner {
       width: 14px;
       height: 14px;
@@ -131,7 +121,6 @@
 
   <input type="number" id="amount" placeholder="Amount" />
 
-  <!-- NEW: payment message -->
   <div id="paymentMessage" class="message"></div>
 
   <select id="provider" onchange="toggleFields()">
@@ -156,12 +145,9 @@
 
   <input type="number" id="refundAmount" placeholder="Refund Amount" />
 
-  <!-- NEW: refund message -->
   <div id="refundMessage" class="message"></div>
 
   <button id="refundBtn" class="danger" onclick="refund()">Refund</button>
-
-  <div class="output" id="output">Waiting for action...</div>
 </div>
 
 <script>
@@ -190,13 +176,9 @@
     }
   }
 
-  function setOutput(message) {
-    document.getElementById("output").innerText = message;
-  }
-
   function updateHelperText() {
-  const helper = document.getElementById("helperText");
-  helper.innerText = "";
+    const helper = document.getElementById("helperText");
+    helper.innerText = ""; // ✅ hidden
   }
 
   function saveReference(ref) {
@@ -279,8 +261,9 @@
 
   async function checkStatus() {
     const btn = document.getElementById("statusBtn");
+    const msgEl = document.getElementById("paymentMessage");
 
-    if (!lastReference) return setOutput("No transaction available");
+    if (!lastReference) return showMessage(msgEl, "No transaction available", "error");
 
     setLoading(btn, true);
 
@@ -288,9 +271,12 @@
       const res = await fetch(`${BASE_URL}/notifications/${lastReference}`);
       const data = await res.json();
 
-      setOutput(`Status: ${data.status || "unknown"} | ${data.message || ""}`);
+      showMessage(
+        msgEl,
+        `Status: ${data.status || "unknown"} | ${data.message || ""}`
+      );
     } catch {
-      setOutput("Error checking status");
+      showMessage(msgEl, "Error checking status", "error");
     } finally {
       setLoading(btn, false);
     }
