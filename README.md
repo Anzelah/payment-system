@@ -84,13 +84,19 @@ Client (UI / API Consumer)
 ## 🎥 Demo Flow
 1. Enter amount
 2. Select provider (Stripe / M-Pesa)
-3. Click Pay (generated transaction reference is stored for refunds)
-4. Check transaction status
-5. Wait for webhook / processing
-6. Check updated status
-7. Trigger refund:
-   - Full refund
-   - Partial refund
+3. Click Pay 
+    A transaction reference is generated and stored
+4. (Optional) Check transaction status
+    View current payment state
+5. Wait for processing / webhook updates
+6. Check updated status (optional)
+7. Initiate refund
+ If Stripe:
+    - Enter refund amount
+    - Supports full or partial refunds
+ If M-Pesa:
+    - User is informed that refunds are handled manually (reversals)
+    - No automatic refund is performed
 
 
 ---
