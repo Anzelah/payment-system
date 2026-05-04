@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,7 +36,7 @@
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 14px;
-      box-sizing: border-box; /* ✅ FIXED ALIGNMENT */
+      box-sizing: border-box;
     }
 
     button {
@@ -141,13 +142,15 @@
 
   <div id="helperText" class="helper"></div>
 
-  <button id="statusBtn" class="secondary" onclick="checkStatus()">Check Status</button>
-
+  <!-- Refund section -->
   <input type="number" id="refundAmount" placeholder="Refund Amount" />
 
   <div id="refundMessage" class="message"></div>
 
   <button id="refundBtn" class="danger" onclick="refund()">Refund</button>
+
+  <!-- Check status moved to bottom -->
+  <button id="statusBtn" class="secondary" onclick="checkStatus()">Check Status</button>
 </div>
 
 <script>
@@ -178,7 +181,7 @@
 
   function updateHelperText() {
     const helper = document.getElementById("helperText");
-    helper.innerText = ""; // ✅ hidden
+    helper.innerText = "";
   }
 
   function saveReference(ref) {
@@ -325,3 +328,4 @@
 
 </body>
 </html>
+```
