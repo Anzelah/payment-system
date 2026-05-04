@@ -1,8 +1,9 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Payfi - A payment processor</title>
+  <title>Payment Demo</title>
 
   <style>
     body {
@@ -117,7 +118,7 @@
 <body>
 
 <div class="container">
-  <h2>Payfi</h2>
+  <h2>Payment Demo</h2>
 
   <input type="number" id="amount" placeholder="Amount" />
 
@@ -141,14 +142,14 @@
 
   <div id="helperText" class="helper"></div>
 
-  <!-- Refund section -->
+  <!-- Refund -->
   <input type="number" id="refundAmount" placeholder="Refund Amount" />
 
   <div id="refundMessage" class="message"></div>
 
   <button id="refundBtn" class="danger" onclick="refund()">Refund</button>
 
-  <!-- Check status moved to bottom -->
+  <!-- Status -->
   <button id="statusBtn" class="secondary" onclick="checkStatus()">Check Status</button>
 </div>
 
@@ -176,11 +177,6 @@
       btn.disabled = false;
       btn.innerText = btn.dataset.originalText;
     }
-  }
-
-  function updateHelperText() {
-    const helper = document.getElementById("helperText");
-    helper.innerText = "";
   }
 
   function saveReference(ref) {
@@ -247,7 +243,6 @@
       if (data.reference) {
         lastReference = data.reference;
         saveReference(data.reference);
-        updateHelperText();
       }
 
       document.getElementById("amount").value = "";
@@ -288,10 +283,25 @@
     const btn = document.getElementById("refundBtn");
     const msgEl = document.getElementById("refundMessage");
 
-    if (!lastReference) return showMessage(msgEl, "No transaction available", "error");
+    const provider = document.getElementById("provider").value;
+
+    if (!lastReference) {
+      return showMessage(msgEl, "No transaction available", "error");
+    }
+
+    // 👉 M-Pesa explanation instead of refund call
+    if (provider === "mpesa") {
+      return showMessage(
+        msgEl,
+        "M-Pesa refunds are handled manually. Please initiate a reversal from your M-Pesa statement or contact support.",
+        "error"
+      );
+    }
 
     const refundAmount = document.getElementById("refundAmount").value;
-    if (!refundAmount) return showMessage(msgEl, "Enter refund amount", "error");
+    if (!refundAmount) {
+      return showMessage(msgEl, "Enter refund amount", "error");
+    }
 
     setLoading(btn, true);
 
@@ -321,9 +331,9 @@
   window.onload = () => {
     toggleFields();
     loadReference();
-    updateHelperText();
   };
 </script>
 
 </body>
 </html>
+```
