@@ -8,9 +8,9 @@ const stripeWebhookRoute = require("./routes/stripeWebhook.routes");
 
 const app = express()
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true,
+  credentials: false,
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
